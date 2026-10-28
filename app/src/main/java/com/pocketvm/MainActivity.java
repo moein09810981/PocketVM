@@ -55,6 +55,7 @@ public class MainActivity extends Activity {
     }
 
     void showHome() {
+        setSelectedTab("خانه");
         content.removeAllViews();
 
         LinearLayout header = new LinearLayout(this);
@@ -249,10 +250,31 @@ public class MainActivity extends Activity {
         return nav;
     }
 
+    void setSelectedTab(String selectedLabel) {
+        setNavItemState(homeTab, "خانه", selectedLabel);
+        setNavItemState(machinesTab, "ماشین‌ها", selectedLabel);
+        setNavItemState(downloadsTab, "دانلودها", selectedLabel);
+        setNavItemState(settingsTab, "تنظیمات", selectedLabel);
+    }
+
+    void setNavItemState(TextView item, String label, String selectedLabel) {
+        if (item == null) return;
+        boolean selected = label.equals(selectedLabel);
+        item.setTextColor(selected ? ORANGE : MUTED);
+        item.setTypeface(Typeface.DEFAULT, selected ? Typeface.BOLD : Typeface.NORMAL);
+        item.setBackground(selected
+                ? round(Color.rgb(42, 29, 23), 14)
+                : round(Color.TRANSPARENT, 14));
+    }
+
     TextView navItem(String icon, String label, boolean selected) {
         TextView item = text(icon + "\n" + label, 12,
                 selected ? ORANGE : MUTED, selected);
         item.setGravity(Gravity.CENTER);
+        item.setPadding(dp(4), dp(4), dp(4), dp(4));
+        item.setBackground(selected
+                ? round(Color.rgb(42, 29, 23), 14)
+                : round(Color.TRANSPARENT, 14));
         item.setOnClickListener(v -> {
             if (label.equals("خانه")) showHome();
             else if (label.equals("ماشین‌ها")) showMachines();
@@ -263,6 +285,7 @@ public class MainActivity extends Activity {
     }
 
     void showMachines() {
+        setSelectedTab("ماشین‌ها");
         content.removeAllViews();
         pageTitle("ماشین‌های من");
         space(20);
@@ -273,6 +296,7 @@ public class MainActivity extends Activity {
     }
 
     void showCreate() {
+        setSelectedTab("ماشین‌ها");
         content.removeAllViews();
         pageTitle("ساخت ماشین مجازی");
         space(24);
@@ -295,6 +319,7 @@ public class MainActivity extends Activity {
     }
 
     void showDownloads() {
+        setSelectedTab("دانلودها");
         content.removeAllViews();
         pageTitle("دانلودها");
         space(22);
@@ -315,6 +340,7 @@ public class MainActivity extends Activity {
     }
 
     void showSettings() {
+        setSelectedTab("تنظیمات");
         content.removeAllViews();
         pageTitle("تنظیمات");
         space(20);
