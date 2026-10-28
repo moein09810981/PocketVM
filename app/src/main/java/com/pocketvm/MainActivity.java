@@ -115,7 +115,7 @@ public class MainActivity extends Activity {
 
         space(12);
         content.addView(createMachineRow(
-                "Linux", "Alpine Linux ARM64", "آمادهٔ راه‌اندازی", "◈"));
+                "Linux", "Alpine Linux ARM64", "QEMU متصل نیست", "◈"));
         space(10);
 
         LinearLayout empty = new LinearLayout(this);
@@ -161,7 +161,7 @@ public class MainActivity extends Activity {
         status.setGravity(Gravity.CENTER_VERTICAL);
         TextView dot = text("●", 11, GREEN, true);
         status.addView(dot);
-        status.addView(text("  نمونهٔ اولیه", 12, GREEN, true));
+        status.addView(text("  نسخهٔ نمایشی · بدون موتور اجرا", 12, MUTED, true));
         card.addView(status);
 
         spaceIn(card, 20);
@@ -325,14 +325,26 @@ public class MainActivity extends Activity {
         space(22);
         content.addView(text("سیستم‌عامل‌ها", 18, WHITE, true));
         space(12);
-        content.addView(createMachineRow(
-                "Alpine Linux", "تصویر ARM64", "دریافت", "◈"));
+        View alpineDownload = createMachineRow(
+                "Alpine Linux", "تصویر ARM64", "آمادهٔ افزودن", "◈");
+        alpineDownload.setOnClickListener(v -> Toast.makeText(this,
+                "دانلود سیستم‌عامل هنوز پیاده‌سازی نشده است.",
+                Toast.LENGTH_LONG).show());
+        content.addView(alpineDownload);
         space(12);
-        content.addView(createMachineRow(
-                "Debian", "تصویر ARM64", "بعداً", "D"));
+        View debianDownload = createMachineRow(
+                "Debian", "تصویر ARM64", "به‌زودی", "D");
+        debianDownload.setOnClickListener(v -> Toast.makeText(this,
+                "دانلود Debian هنوز پیاده‌سازی نشده است.",
+                Toast.LENGTH_LONG).show());
+        content.addView(debianDownload);
         space(12);
-        content.addView(createMachineRow(
-                "Ubuntu", "تصویر ARM64", "بعداً", "U"));
+        View ubuntuDownload = createMachineRow(
+                "Ubuntu", "تصویر ARM64", "به‌زودی", "U");
+        ubuntuDownload.setOnClickListener(v -> Toast.makeText(this,
+                "دانلود Ubuntu هنوز پیاده‌سازی نشده است.",
+                Toast.LENGTH_LONG).show());
+        content.addView(ubuntuDownload);
         space(18);
         content.addView(text(
                 "هنوز دانلودی شروع نشده است.",
@@ -410,7 +422,9 @@ public class MainActivity extends Activity {
     }
 
     View gap(int width) {
-        return new View(this);
+        View view = new View(this);
+        view.setMinimumWidth(dp(width));
+        return view;
     }
 
     void space(int height) {
