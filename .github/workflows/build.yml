@@ -40,7 +40,7 @@ jobs:
             sed -i 's#gradle-8\.11\.1-\(all\|bin\)\.zip#gradle-8.14.3-\1.zip#' android/gradle/wrapper/gradle-wrapper.properties
           fi
       - name: Build APK
-        run: flutter build apk --debug
+        run: flutter build apk --debug --verbose
       - uses: actions/upload-artifact@v4
         with:
           name: PocketVM-Flutter-debug-apk
