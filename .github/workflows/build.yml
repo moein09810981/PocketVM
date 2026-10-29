@@ -27,6 +27,8 @@ jobs:
           cp -R app/. android/app/
       - name: Flutter doctor
         run: flutter doctor -v
+      - name: Remove generated starter test
+        run: rm -f test/widget_test.dart
       - name: Resolve packages
         run: flutter pub get
       - name: Analyze Dart
