@@ -423,6 +423,8 @@ public class MainActivity extends Activity {
         space(8);
         actionButton("باز کردن کنسول", this::showConsole);
         space(8);
+        actionButton("پیش‌نمایش صفحهٔ شروع", this::showStartup);
+        space(8);
         TextView back = text("بازگشت به ماشین‌ها", 13, MUTED, true);
         back.setGravity(Gravity.CENTER);
         back.setPadding(0, dp(10), 0, dp(10));
