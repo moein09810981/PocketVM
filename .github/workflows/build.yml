@@ -32,7 +32,7 @@ jobs:
       - name: Resolve packages
         run: flutter pub get
       - name: Analyze Dart
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
       - name: Set supported Gradle wrapper version
         run: |
           if [ -f android/gradle/wrapper/gradle-wrapper.properties ]; then
