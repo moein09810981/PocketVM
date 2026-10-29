@@ -23,8 +23,8 @@ class PocketVM extends StatelessWidget {
       debugShowCheckedModeBanner: false, title: 'PocketVM',
       theme: base.copyWith(
         scaffoldBackgroundColor: bg,
-        textTheme: GoogleFonts.vazirmatnTextTheme(base.textTheme).apply(fontSizeFactor: 1.06),
-        primaryTextTheme: GoogleFonts.vazirmatnTextTheme(base.primaryTextTheme).apply(fontSizeFactor: 1.06),
+        textTheme: GoogleFonts.vazirmatnTextTheme(base.textTheme),
+        primaryTextTheme: GoogleFonts.vazirmatnTextTheme(base.primaryTextTheme),
         colorScheme: const ColorScheme.dark(primary: accent, surface: panel, secondary: green),
         dividerColor: line,
         navigationBarTheme: const NavigationBarThemeData(
