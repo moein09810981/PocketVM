@@ -18,6 +18,8 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Generate Flutter Android wrapper
+        run: flutter create --platforms=android --project-name=pocketvm .
       - name: Prepare Flutter Android project layout
         run: |
           mkdir -p android/app
