@@ -29,6 +29,11 @@ jobs:
         run: flutter pub get
       - name: Analyze Dart
         run: flutter analyze
+      - name: Set supported Gradle wrapper version
+        run: |
+          if [ -f android/gradle/wrapper/gradle-wrapper.properties ]; then
+            sed -i 's#gradle-8\.11\.1-\(all\|bin\)\.zip#gradle-8.14.3-\1.zip#' android/gradle/wrapper/gradle-wrapper.properties
+          fi
       - name: Build APK
         run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
