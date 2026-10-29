@@ -92,18 +92,16 @@ public class MainActivity extends Activity {
         content.addView(createFeaturedCard());
 
         space(22);
-        content.addView(text("نمای کلی", 18, WHITE, true));
+        LinearLayout dots = new LinearLayout(this);
+        dots.setGravity(Gravity.CENTER);
+        for (int i = 0; i < 4; i++) {
+            TextView dot = text("●", 8, i == 0 ? ORANGE : Color.rgb(65, 70, 78), true);
+            dot.setGravity(Gravity.CENTER);
+            dots.addView(dot, params(13, 18));
+        }
+        content.addView(dots);
         space(12);
 
-        LinearLayout stats = new LinearLayout(this);
-        stats.addView(stat("ماشین‌ها", "۰", "ماشین ساخته‌شده"),
-                new LinearLayout.LayoutParams(0, dp(105), 1));
-        stats.addView(gap(10), params(10, 1));
-        stats.addView(stat("موتور", "QEMU", "آماده‌سازی نشده"),
-                new LinearLayout.LayoutParams(0, dp(105), 1));
-        content.addView(stats);
-
-        space(26);
         LinearLayout titleRow = new LinearLayout(this);
         titleRow.setGravity(Gravity.CENTER_VERTICAL);
         titleRow.addView(text("ماشین‌های من", 18, WHITE, true),
@@ -162,22 +160,31 @@ public class MainActivity extends Activity {
         status.setGravity(Gravity.CENTER_VERTICAL);
         TextView dot = text("●", 11, GREEN, true);
         status.addView(dot);
-        status.addView(text("  نسخهٔ نمایشی · بدون موتور اجرا", 12, MUTED, true));
+        status.addView(text("  نمایشی · موتور اجرا متصل نیست", 11, MUTED, true));
         card.addView(status);
 
         spaceIn(card, 20);
-        card.addView(text("Alpine Linux", 27, WHITE, true));
-        spaceIn(card, 5);
-        card.addView(text("ARM64  •  64-bit", 13, MUTED, false));
+        LinearLayout linuxHero = new LinearLayout(this);
+        linuxHero.setGravity(Gravity.CENTER_VERTICAL);
+        LinearLayout linuxText = new LinearLayout(this);
+        linuxText.setOrientation(LinearLayout.VERTICAL);
+        linuxText.addView(text("Linux", 26, WHITE, true));
+        spaceIn(linuxText, 4);
+        linuxText.addView(text("Alpine Linux 3.20 (ARM64)", 12, MUTED, false));
+        linuxHero.addView(linuxText, new LinearLayout.LayoutParams(0, -2, 1));
+        TextView penguin = text("🐧", 44, WHITE, true);
+        penguin.setGravity(Gravity.CENTER);
+        linuxHero.addView(penguin, params(64, 68));
+        card.addView(linuxHero);
 
         spaceIn(card, 22);
 
         LinearLayout specs = new LinearLayout(this);
-        specs.addView(text("▣  1 GB RAM", 12, WHITE, false),
+        specs.addView(text("▣  1.2 GB RAM", 11, WHITE, false),
                 new LinearLayout.LayoutParams(0, -2, 1));
-        specs.addView(text("⚙  1 vCPU", 12, WHITE, false),
+        specs.addView(text("⚙  2 vCPU", 11, WHITE, false),
                 new LinearLayout.LayoutParams(0, -2, 1));
-        specs.addView(text("▤  8 GB", 12, WHITE, false),
+        specs.addView(text("▤  8 GB دیسک", 11, WHITE, false),
                 new LinearLayout.LayoutParams(0, -2, 1));
         card.addView(specs);
 
