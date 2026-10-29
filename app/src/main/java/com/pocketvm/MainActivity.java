@@ -296,11 +296,126 @@ public class MainActivity extends Activity {
         setSelectedTab("ماشین‌ها");
         content.removeAllViews();
         pageTitle("ماشین‌های من");
-        space(20);
+
+        LinearLayout heading = new LinearLayout(this);
+        heading.setGravity(Gravity.CENTER_VERTICAL);
+        heading.addView(text("ماشین‌های مجازی", 17, WHITE, true),
+                new LinearLayout.LayoutParams(0, -2, 1));
+        TextView add = text("＋", 28, ORANGE, true);
+        add.setGravity(Gravity.CENTER);
+        add.setOnClickListener(v -> showCreate());
+        heading.addView(add, params(42, 42));
+        space(14);
+        content.addView(heading);
+
+        space(8);
+        LinearLayout linux = panel();
+        linux.setPadding(dp(14), dp(14), dp(14), dp(14));
+        linux.setBackground(roundGradient(
+                new int[]{Color.rgb(34, 28, 24), Color.rgb(18, 22, 27)}, 18));
+        linux.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout top = new LinearLayout(this);
+        top.setGravity(Gravity.CENTER_VERTICAL);
+        TextView penguin = text("🐧", 32, WHITE, true);
+        penguin.setGravity(Gravity.CENTER);
+        top.addView(penguin, params(48, 48));
+        LinearLayout details = new LinearLayout(this);
+        details.setOrientation(LinearLayout.VERTICAL);
+        details.setPadding(dp(10), 0, 0, 0);
+        details.addView(text("Linux", 16, WHITE, true));
+        spaceIn(details, 3);
+        details.addView(text("Alpine Linux 3.20", 11, MUTED, false));
+        top.addView(details, new LinearLayout.LayoutParams(0, -2, 1));
+        TextView status = text("● آماده", 10, GREEN, true);
+        status.setBackground(round(Color.rgb(19, 47, 38), 12));
+        status.setPadding(dp(9), dp(6), dp(9), dp(6));
+        top.addView(status);
+        linux.addView(top);
+
+        spaceIn(linux, 14);
+        LinearLayout specs = new LinearLayout(this);
+        specs.addView(text("▣  1.2 GB RAM", 10, WHITE, false),
+                new LinearLayout.LayoutParams(0, -2, 1));
+        specs.addView(text("⚙  2 vCPU", 10, WHITE, false),
+                new LinearLayout.LayoutParams(0, -2, 1));
+        specs.addView(text("▤  8 GB دیسک", 10, WHITE, false),
+                new LinearLayout.LayoutParams(0, -2, 1));
+        linux.addView(specs);
+        linux.setOnClickListener(v -> showMachineDetails());
+        content.addView(linux);
+
+        space(14);
         content.addView(createMachineRow(
-                "Linux", "Alpine Linux ARM64", "خاموش", "◈"));
-        space(15);
+                "Ubuntu", "Ubuntu 24.04 · هنوز ساخته نشده", "متوقف", "◈"));
+        space(10);
+        content.addView(createMachineRow(
+                "Debian", "Debian 12 · هنوز ساخته نشده", "متوقف", "D"));
+
+        space(24);
+        LinearLayout storage = panel();
+        storage.setPadding(dp(14), dp(14), dp(14), dp(14));
+        storage.setOrientation(LinearLayout.VERTICAL);
+        storage.addView(text("فضای ذخیره‌سازی", 14, WHITE, true));
+        spaceIn(storage, 8);
+        LinearLayout storageLine = new LinearLayout(this);
+        storageLine.setGravity(Gravity.CENTER_VERTICAL);
+        storageLine.addView(text("فضای استفاده‌شده", 11, MUTED, false),
+                new LinearLayout.LayoutParams(0, -2, 1));
+        storageLine.addView(text("۰ / ۳۲ GB", 11, MUTED, false));
+        storage.addView(storageLine);
+        spaceIn(storage, 10);
+        View progress = new View(this);
+        progress.setBackground(round(Color.rgb(43, 47, 54), 8));
+        storage.addView(progress, new LinearLayout.LayoutParams(-1, dp(6)));
+        content.addView(storage);
+
+        space(18);
         actionButton("＋  ساخت ماشین جدید", this::showCreate);
+    }
+
+    void showMachineDetails() {
+        content.removeAllViews();
+        setSelectedTab("ماشین‌ها");
+        pageTitle("جزئیات ماشین مجازی");
+        space(18);
+        LinearLayout hero = panel();
+        hero.setPadding(dp(16), dp(16), dp(16), dp(16));
+        hero.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout top = new LinearLayout(this);
+        top.setGravity(Gravity.CENTER_VERTICAL);
+        TextView penguin = text("🐧", 34, WHITE, true);
+        top.addView(penguin, params(54, 54));
+        LinearLayout info = new LinearLayout(this);
+        info.setOrientation(LinearLayout.VERTICAL);
+        info.setPadding(dp(12), 0, 0, 0);
+        info.addView(text("Linux", 18, WHITE, true));
+        info.addView(text("Alpine Linux 3.20 (ARM64)", 11, MUTED, false));
+        info.addView(text("● آمادهٔ تنظیم · اجرای واقعی غیرفعال", 10, GREEN, false));
+        top.addView(info);
+        hero.addView(top);
+        spaceIn(hero, 16);
+        hero.addView(text("1.2 GB RAM     ·     2 vCPU     ·     8 GB دیسک",
+                11, WHITE, false));
+        content.addView(hero);
+        space(18);
+        content.addView(text("تنظیمات سریع", 17, WHITE, true));
+        space(10);
+        content.addView(createMachineRow("حافظه", "RAM ماشین مجازی", "1.2 GB", "▤"));
+        space(10);
+        content.addView(createMachineRow("پردازنده", "تعداد هستهٔ مجازی", "2 vCPU", "⚙"));
+        space(10);
+        content.addView(createMachineRow("فضای ذخیره‌سازی", "اندازهٔ دیسک مجازی", "8 GB", "▣"));
+        space(20);
+        actionButton("▶  اجرا", () -> Toast.makeText(this,
+                "برای اجرای ماشین، ابتدا باید موتور QEMU اضافه شود.",
+                Toast.LENGTH_LONG).show());
+        space(10);
+        TextView back = text("بازگشت به ماشین‌ها", 13, MUTED, true);
+        back.setGravity(Gravity.CENTER);
+        back.setPadding(0, dp(10), 0, dp(10));
+        back.setOnClickListener(v -> showMachines());
+        content.addView(back);
     }
 
     void showCreate() {
