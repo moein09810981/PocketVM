@@ -630,6 +630,25 @@ public class MainActivity extends Activity {
         space(5);
         content.addView(text("فهرست توزیع‌های لینوکس برای معماری ARM64",
                 11, MUTED, false));
+        space(12);
+        LinearLayout filters = new LinearLayout(this);
+        String[] filterNames = {"همه", "سبک", "محبوب"};
+        for (String filter : filterNames) {
+            TextView chip = text(filter, 12,
+                    filter.equals(downloadFilter) ? Color.BLACK : MUTED, true);
+            chip.setGravity(Gravity.CENTER);
+            chip.setPadding(dp(14), dp(9), dp(14), dp(9));
+            chip.setBackground(round(filter.equals(downloadFilter)
+                    ? ORANGE : CARD, 18));
+            LinearLayout.LayoutParams cp = new LinearLayout.LayoutParams(-2, dp(38));
+            cp.setMargins(0, 0, dp(8), 0);
+            filters.addView(chip, cp);
+            chip.setOnClickListener(v -> {
+                downloadFilter = filter;
+                showDownloads();
+            });
+        }
+        content.addView(filters);
         space(14);
 
         String[][] os = {
