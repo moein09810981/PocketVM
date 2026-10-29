@@ -652,18 +652,20 @@ public class MainActivity extends Activity {
         space(14);
 
         String[][] os = {
-                {"Alpine Linux", "3.20 (ARM64)", "سبک و سریع", "▲"},
-                {"Ubuntu", "24.04 (ARM64)", "محبوب و قدرتمند", "◈"},
-                {"Debian", "12 (ARM64)", "پایدار و حرفه‌ای", "D"},
-                {"Fedora", "41 (ARM64)", "به‌روز و ایمن", "f"},
-                {"Arch Linux", "ARM64", "سریع و منعطف", "A"}
+                {"Alpine Linux", "3.20 (ARM64)", "سبک و سریع", "▲", "سبک"},
+                {"Ubuntu", "24.04 (ARM64)", "محبوب و قدرتمند", "◈", "محبوب"},
+                {"Debian", "12 (ARM64)", "پایدار و حرفه‌ای", "D", "محبوب"},
+                {"Fedora", "41 (ARM64)", "به‌روز و ایمن", "f", "محبوب"},
+                {"Arch Linux", "ARM64", "سریع و منعطف", "A", "سبک"}
         };
         int[] colors = {
                 Color.rgb(26, 89, 126), Color.rgb(220, 61, 24),
                 Color.rgb(150, 20, 47), Color.rgb(20, 82, 165),
                 Color.rgb(30, 94, 150)
         };
+        int shown = 0;
         for (int i = 0; i < os.length; i++) {
+            if (!downloadFilter.equals("همه") && !downloadFilter.equals(os[i][4])) continue;
             final String name = os[i][0];
             LinearLayout item = new LinearLayout(this);
             item.setGravity(Gravity.CENTER_VERTICAL);
@@ -688,7 +690,9 @@ public class MainActivity extends Activity {
                     Toast.LENGTH_LONG).show());
             content.addView(item);
             space(9);
+            shown++;
         }
+        if (shown == 0) content.addView(text("موردی در این دسته نیست.", 12, MUTED, false));
         space(6);
         content.addView(text("هیچ فایلی دانلود نشده است.",
                 12, MUTED, false));
