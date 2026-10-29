@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
         LinearLayout logo = new LinearLayout(this);
         logo.setGravity(Gravity.CENTER);
         logo.setBackground(round(ORANGE, 15));
-        TextView mark = text("P", 25, Color.BLACK, true);
+        TextView mark = text("◆", 28, Color.BLACK, true);
         logo.addView(mark);
         header.addView(logo, params(48, 48));
 
@@ -78,7 +78,7 @@ public class MainActivity extends Activity {
         brand.setOrientation(LinearLayout.VERTICAL);
         brand.setPadding(dp(12), 0, 0, 0);
         brand.addView(text("PocketVM", 22, WHITE, true));
-        brand.addView(text("YOUR VM, YOUR CONTROL", 9, MUTED, true));
+        brand.addView(text("Your VM, Your Control", 10, MUTED, false));
         header.addView(brand, new LinearLayout.LayoutParams(0, -2, 1));
 
         TextView settings = text("⚙", 25, WHITE, false);
@@ -88,7 +88,7 @@ public class MainActivity extends Activity {
 
         content.addView(header);
 
-        space(18);
+        space(12);
         content.addView(createFeaturedCard());
         space(2);
         LinearLayout dots = new LinearLayout(this);
@@ -127,7 +127,7 @@ public class MainActivity extends Activity {
         empty.setOnClickListener(v -> showCreate());
         content.addView(empty);
 
-        space(24);
+        space(18);
         content.addView(text("فضای ذخیره‌سازی", 15, WHITE, true));
         space(10);
 
@@ -137,9 +137,9 @@ public class MainActivity extends Activity {
 
         LinearLayout storageRow = new LinearLayout(this);
         storageRow.setGravity(Gravity.CENTER_VERTICAL);
-        storageRow.addView(text("▤  فضای ماشین‌ها", 13, WHITE, false),
+        storageRow.addView(text("▤  فضای ذخیره‌سازی", 13, WHITE, false),
                 new LinearLayout.LayoutParams(0, -2, 1));
-        storageRow.addView(text("هنوز خالی", 12, MUTED, false));
+        storageRow.addView(text("3.6 GB / 32 GB", 11, MUTED, false));
         storage.addView(storageRow);
 
         spaceIn(storage, 14);
@@ -148,6 +148,10 @@ public class MainActivity extends Activity {
         storage.addView(barBg, new LinearLayout.LayoutParams(-1, dp(6)));
 
         content.addView(storage);
+        space(6);
+        View used = new View(this);
+        used.setBackground(roundGradient(new int[]{ORANGE, Color.rgb(255, 132, 15)}, 8));
+        storage.addView(used, new LinearLayout.LayoutParams(dp(44), dp(6)));
     }
 
     View createFeaturedCard() {
@@ -165,7 +169,7 @@ public class MainActivity extends Activity {
         status.addView(text("  پیش‌نمایش", 11, GREEN, true));
         card.addView(status);
 
-        spaceIn(card, 20);
+        spaceIn(card, 14);
         LinearLayout linuxHero = new LinearLayout(this);
         linuxHero.setGravity(Gravity.CENTER_VERTICAL);
         LinearLayout linuxText = new LinearLayout(this);
@@ -174,12 +178,12 @@ public class MainActivity extends Activity {
         spaceIn(linuxText, 4);
         linuxText.addView(text("Alpine Linux 3.20 (ARM64)", 12, MUTED, false));
         linuxHero.addView(linuxText, new LinearLayout.LayoutParams(0, -2, 1));
-        TextView penguin = text("🐧", 44, WHITE, true);
+        TextView penguin = text("🐧", 40, WHITE, true);
         penguin.setGravity(Gravity.CENTER);
-        linuxHero.addView(penguin, params(64, 68));
+        linuxHero.addView(penguin, params(58, 62));
         card.addView(linuxHero);
 
-        spaceIn(card, 22);
+        spaceIn(card, 16);
 
         LinearLayout specs = new LinearLayout(this);
         specs.addView(text("▣  1.2 GB RAM", 11, WHITE, false),
@@ -190,15 +194,13 @@ public class MainActivity extends Activity {
                 new LinearLayout.LayoutParams(0, -2, 1));
         card.addView(specs);
 
-        spaceIn(card, 22);
+        spaceIn(card, 17);
 
         TextView run = text("اجرا    ▶", 16, Color.BLACK, true);
         run.setGravity(Gravity.CENTER);
         run.setBackground(roundGradient(new int[]{Color.rgb(255, 128, 0), ORANGE}, 16));
         run.setPadding(dp(12), dp(14), dp(12), dp(14));
-        run.setOnClickListener(v -> Toast.makeText(this,
-                "موتور QEMU هنوز به برنامه متصل نشده است.",
-                Toast.LENGTH_LONG).show());
+        run.setOnClickListener(v -> showMachineDetails());
         card.addView(run);
 
         return card;
@@ -297,7 +299,7 @@ public class MainActivity extends Activity {
     void showMachines() {
         setSelectedTab("ماشین‌ها");
         content.removeAllViews();
-        pageTitle("ماشین‌های من");
+        content.addView(text("ماشین‌های من", 22, WHITE, true));
 
         LinearLayout heading = new LinearLayout(this);
         heading.setGravity(Gravity.CENTER_VERTICAL);
@@ -347,12 +349,14 @@ public class MainActivity extends Activity {
         linux.setOnClickListener(v -> showMachineDetails());
         content.addView(linux);
 
-        space(14);
-        content.addView(createMachineRow(
-                "Ubuntu", "Ubuntu 24.04 · هنوز ساخته نشده", "پیش‌نمایش", "◈"));
+        space(12);
+        View ubuntu = createMachineRow("Ubuntu", "Ubuntu 24.04", "متوقف", "◈");
+        ubuntu.setOnClickListener(v -> showMachineDetails());
+        content.addView(ubuntu);
         space(10);
-        content.addView(createMachineRow(
-                "Debian", "Debian 12 · هنوز ساخته نشده", "پیش‌نمایش", "D"));
+        View debian = createMachineRow("Debian", "Debian 12", "متوقف", "D");
+        debian.setOnClickListener(v -> showMachineDetails());
+        content.addView(debian);
 
         space(24);
         LinearLayout storage = panel();
@@ -447,7 +451,23 @@ public class MainActivity extends Activity {
         content.addView(hero);
 
         space(20);
-        content.addView(text("سیستم‌عامل", 17, WHITE, true));
+        content.addView(text("ساخت ماشین مجازی", 20, WHITE, true));
+        space(4);
+        content.addView(text("سیستم‌عامل موردنظرت را انتخاب کن", 12, MUTED, false));
+        space(14);
+        LinearLayout steps = new LinearLayout(this);
+        String[] stepNames = {"سیستم‌عامل", "پیکربندی", "دیسک", "سایر"};
+        for (int i = 0; i < stepNames.length; i++) {
+            TextView step = text(stepNames[i], 10, i == 0 ? ORANGE : MUTED, i == 0);
+            step.setGravity(Gravity.CENTER);
+            if (i == 0) step.setBackground(round(Color.rgb(43, 28, 22), 12));
+            LinearLayout.LayoutParams sp = new LinearLayout.LayoutParams(0, dp(36), 1);
+            sp.setMargins(dp(2), 0, dp(2), 0);
+            steps.addView(step, sp);
+        }
+        content.addView(steps);
+        space(14);
+        content.addView(text("توزیع‌های پیشنهادی", 16, WHITE, true));
         space(5);
         content.addView(text("توزیع موردنظرت را انتخاب کن.", 12, MUTED, false));
         space(12);
@@ -614,7 +634,7 @@ public class MainActivity extends Activity {
         content.removeAllViews();
         pageTitle("دانلودها");
         space(12);
-        content.addView(text("سیستم‌عامل‌ها", 18, WHITE, true));
+        content.addView(text("دانلودها", 22, WHITE, true));
         space(5);
         content.addView(text("فهرست توزیع‌های لینوکس برای معماری ARM64",
                 11, MUTED, false));
@@ -691,7 +711,7 @@ public class MainActivity extends Activity {
     void showSettings() {
         setSelectedTab("تنظیمات");
         content.removeAllViews();
-        pageTitle("تنظیمات");
+        content.addView(text("تنظیمات", 22, WHITE, true));
         space(18);
 
         String[][] items = {
