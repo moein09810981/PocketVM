@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
 
         content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
-        content.setPadding(dp(20), dp(20), dp(20), dp(24));
+        content.setPadding(dp(16), dp(14), dp(16), dp(18));
         content.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         scroll.addView(content);
@@ -88,12 +88,7 @@ public class MainActivity extends Activity {
 
         content.addView(header);
 
-        space(20);
-        content.addView(text("ماشین‌های مجازی تو", 24, WHITE, true));
-        space(5);
-        content.addView(text("سیستم‌عاملت رو انتخاب کن و اجرا کن.", 13, MUTED, false));
-
-        space(22);
+        space(18);
         content.addView(createFeaturedCard());
         space(2);
         LinearLayout dots = new LinearLayout(this);
@@ -105,7 +100,7 @@ public class MainActivity extends Activity {
         }
         content.addView(dots);
 
-        space(12);
+        space(14);
 
         LinearLayout titleRow = new LinearLayout(this);
         titleRow.setGravity(Gravity.CENTER_VERTICAL);
@@ -118,16 +113,18 @@ public class MainActivity extends Activity {
         content.addView(titleRow);
 
         space(12);
-        content.addView(createMachineRow(
-                "Linux", "Alpine Linux ARM64", "QEMU متصل نیست", "◈"));
+        View homeMachine = createMachineRow(
+                "Linux", "Alpine Linux 3.20", "آمادهٔ پیکربندی", "🐧");
+        homeMachine.setOnClickListener(v -> showMachineDetails());
+        content.addView(homeMachine);
         space(10);
 
         LinearLayout empty = new LinearLayout(this);
         empty.setGravity(Gravity.CENTER);
         empty.setPadding(dp(12), dp(14), dp(12), dp(14));
         empty.setBackground(round(CARD, 16));
-        empty.addView(text("＋  ماشین‌های دیگر را بعداً اضافه کن",
-                12, MUTED, false));
+        empty.addView(text("＋  افزودن ماشین مجازی", 12, MUTED, false));
+        empty.setOnClickListener(v -> showCreate());
         content.addView(empty);
 
         space(24);
@@ -158,14 +155,14 @@ public class MainActivity extends Activity {
         card.setOrientation(LinearLayout.VERTICAL);
         card.setPadding(dp(18), dp(18), dp(18), dp(18));
         card.setBackground(roundGradient(
-                new int[]{Color.rgb(47, 29, 20), Color.rgb(17, 20, 25)}, 22));
+                new int[]{Color.rgb(54, 29, 21), Color.rgb(17, 20, 25)}, 22));
         card.setElevation(dp(3));
 
         LinearLayout status = new LinearLayout(this);
         status.setGravity(Gravity.CENTER_VERTICAL);
         TextView dot = text("●", 11, GREEN, true);
         status.addView(dot);
-        status.addView(text("  نمایشی · موتور اجرا متصل نیست", 11, MUTED, true));
+        status.addView(text("  پیش‌نمایش", 11, GREEN, true));
         card.addView(status);
 
         spaceIn(card, 20);
@@ -197,8 +194,8 @@ public class MainActivity extends Activity {
 
         TextView run = text("اجرا    ▶", 16, Color.BLACK, true);
         run.setGravity(Gravity.CENTER);
-        run.setBackground(round(ORANGE, 15));
-        run.setPadding(dp(12), dp(16), dp(12), dp(16));
+        run.setBackground(roundGradient(new int[]{Color.rgb(255, 128, 0), ORANGE}, 16));
+        run.setPadding(dp(12), dp(14), dp(12), dp(14));
         run.setOnClickListener(v -> Toast.makeText(this,
                 "موتور QEMU هنوز به برنامه متصل نشده است.",
                 Toast.LENGTH_LONG).show());
@@ -226,7 +223,7 @@ public class MainActivity extends Activity {
         info.addView(text(description, 11, MUTED, false));
         row.addView(info, new LinearLayout.LayoutParams(0, -2, 1));
 
-        TextView badge = text("● " + status, 10, GREEN, true);
+        TextView badge = text(status, 10, MUTED, true);
         row.addView(badge);
 
         return row;
@@ -661,7 +658,9 @@ public class MainActivity extends Activity {
             LinearLayout item = new LinearLayout(this);
             item.setGravity(Gravity.CENTER_VERTICAL);
             item.setPadding(dp(12), dp(12), dp(12), dp(12));
-            item.setBackground(round(CARD, 16));
+            GradientDrawable itemBg = round(CARD, 16);
+            itemBg.setStroke(dp(1), Color.rgb(31, 37, 45));
+            item.setBackground(itemBg);
             TextView icon = text(os[i][3], 21, WHITE, true);
             icon.setGravity(Gravity.CENTER);
             icon.setBackground(round(colors[i], 12));
@@ -706,7 +705,9 @@ public class MainActivity extends Activity {
             LinearLayout row = new LinearLayout(this);
             row.setGravity(Gravity.CENTER_VERTICAL);
             row.setPadding(dp(14), dp(15), dp(14), dp(15));
-            row.setBackground(round(CARD, 12));
+            GradientDrawable rowBg = round(CARD, 12);
+            rowBg.setStroke(dp(1), Color.rgb(31, 37, 45));
+            row.setBackground(rowBg);
             TextView icon = text(item[0], 22, WHITE, false);
             icon.setGravity(Gravity.CENTER);
             row.addView(icon, params(36, 42));
@@ -753,7 +754,8 @@ public class MainActivity extends Activity {
         TextView button = text(label, 15, Color.BLACK, true);
         button.setGravity(Gravity.CENTER);
         button.setPadding(dp(12), dp(16), dp(12), dp(16));
-        button.setBackground(round(ORANGE, 15));
+        button.setBackground(roundGradient(new int[]{Color.rgb(255, 126, 0), ORANGE}, 18));
+        button.setElevation(dp(2));
         button.setOnClickListener(v -> action.run());
         content.addView(button);
     }
@@ -786,7 +788,7 @@ public class MainActivity extends Activity {
         GradientDrawable d = new GradientDrawable(
                 GradientDrawable.Orientation.TL_BR, colors);
         d.setCornerRadius(dp(radius));
-        d.setStroke(dp(1), Color.rgb(88, 49, 29));
+        d.setStroke(dp(1), Color.rgb(77, 47, 32));
         return d;
     }
 
