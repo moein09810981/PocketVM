@@ -22,6 +22,7 @@ jobs:
         run: flutter create --platforms=android --project-name=pocketvm .
       - name: Prepare Flutter Android project layout
         run: |
+          rm -f android/build.gradle.kts android/app/build.gradle.kts
           mkdir -p android/app
           cp settings.gradle build.gradle android/
           cp -R app/. android/app/
