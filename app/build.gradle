@@ -15,4 +15,8 @@ android {
         versionName '1.1.0'
     }
 }
+repositories {
+    google()
+    mavenCentral()
+}
 flutter { source '../..' }
