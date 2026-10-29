@@ -719,14 +719,26 @@ public class MainActivity extends Activity {
             row.addView(info, new LinearLayout.LayoutParams(0, -2, 1));
             TextView arrow = text("›", 23, MUTED, false);
             row.addView(arrow);
-            row.setOnClickListener(v -> Toast.makeText(this,
-                    "بخش «" + item[1] + "» هنوز در حال آماده‌سازی است.",
-                    Toast.LENGTH_SHORT).show());
+            row.setOnClickListener(v -> showSettingSection(item[1]));
             content.addView(row);
             space(1);
         }
         space(22);
         content.addView(text("PocketVM · نسخهٔ آزمایشی", 11, MUTED, false));
+    }
+
+    void showSettingSection(String section) {
+        content.removeAllViews();
+        pageTitle(section);
+        space(18);
+        LinearLayout card = panel();
+        card.setPadding(dp(16), dp(16), dp(16), dp(16));
+        card.addView(text(section, 18, WHITE, true));
+        spaceIn(card, 10);
+        card.addView(text("این بخش نمایشی است و تنظیمات سیستمی هنوز فعال نیستند.", 13, MUTED, false));
+        content.addView(card);
+        space(18);
+        actionButton("بازگشت به تنظیمات", this::showSettings);
     }
 
     void pageTitle(String title) {
