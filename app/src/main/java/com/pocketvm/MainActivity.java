@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
     LinearLayout content;
     TextView homeTab, machinesTab, downloadsTab, settingsTab;
     String selectedOs = "Alpine Linux";
-    int ramValue = 12;
+    int ramValue = 2;
     int cpuValue = 2;
     int diskValue = 8;
     String downloadFilter = "همه";
