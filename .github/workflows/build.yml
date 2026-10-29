@@ -39,9 +39,11 @@ jobs:
           if [ -f android/gradle/wrapper/gradle-wrapper.properties ]; then
             sed -i 's#gradle-8\.11\.1-\(all\|bin\)\.zip#gradle-8.14.3-\1.zip#' android/gradle/wrapper/gradle-wrapper.properties
           fi
-      - name: Build APK
-        run: flutter build apk --debug --verbose
+      - name: Build APK with Gradle
+        run: |
+          cd android
+          ./gradlew :app:assembleDebug --stacktrace --info
       - uses: actions/upload-artifact@v4
         with:
           name: PocketVM-Flutter-debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
