@@ -535,6 +535,90 @@ public class MainActivity extends Activity {
         return row;
     }
 
+
+    View settingSlider(String title, String initialValue, int initial, int max, String type) {
+        LinearLayout box = panel();
+        box.setPadding(dp(14), dp(12), dp(14), dp(10));
+        box.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout labels = new LinearLayout(this);
+        labels.setGravity(Gravity.CENTER_VERTICAL);
+        labels.addView(text(title, 13, WHITE, true), new LinearLayout.LayoutParams(0, -2, 1));
+        TextView value = text(initialValue, 12, MUTED, true);
+        labels.addView(value);
+        box.addView(labels);
+        SeekBar seek = new SeekBar(this);
+        seek.setMax(max);
+        seek.setProgress(initial);
+        seek.setProgressTintList(android.content.res.ColorStateList.valueOf(ORANGE));
+        seek.setThumbTintList(android.content.res.ColorStateList.valueOf(ORANGE));
+        box.addView(seek, new LinearLayout.LayoutParams(-1, dp(34)));
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) {
+                int n = Math.max(1, progress);
+                value.setText(type.equals("cpu") ? n + " vCPU" : n + " GB");
+                if (type.equals("ram")) ramValue = n;
+                else if (type.equals("cpu")) cpuValue = n;
+                else diskValue = n;
+            }
+            public void onStartTrackingTouch(SeekBar bar) {}
+            public void onStopTrackingTouch(SeekBar bar) {}
+        });
+        return box;
+    }
+
+    void showConsole() {
+        content.removeAllViews();
+        setSelectedTab("ماشین‌ها");
+        pageTitle("کنسول ماشین");
+        space(14);
+        LinearLayout top = panel();
+        top.setPadding(dp(12), dp(12), dp(12), dp(12));
+        top.setGravity(Gravity.CENTER_VERTICAL);
+        top.addView(text("🐧", 30, WHITE, true), params(46, 46));
+        LinearLayout info = new LinearLayout(this);
+        info.setOrientation(LinearLayout.VERTICAL);
+        info.setPadding(dp(10), 0, 0, 0);
+        info.addView(text("Linux", 15, WHITE, true));
+        info.addView(text("پیش‌نمایش کنسول · ماشین اجرا نیست", 10, GREEN, false));
+        top.addView(info);
+        content.addView(top);
+        space(10);
+        TextView terminal = text("PocketVM Console / Alpine Linux 3.20\\n\\nWelcome to Alpine Linux!\\nThis is a UI preview. No virtual machine is running.\\n\\nalpine:~$ _", 12, Color.rgb(214, 224, 218), false);
+        terminal.setGravity(Gravity.TOP | Gravity.LEFT);
+        terminal.setTypeface(Typeface.MONOSPACE);
+        terminal.setPadding(dp(14), dp(16), dp(14), dp(16));
+        terminal.setMinHeight(dp(320));
+        terminal.setBackground(round(Color.rgb(4, 8, 11), 16));
+        content.addView(terminal, new LinearLayout.LayoutParams(-1, 0, 1));
+        space(10);
+        actionButton("بازگشت به جزئیات", this::showMachineDetails);
+    }
+
+    void showStartup() {
+        content.removeAllViews();
+        setSelectedTab("ماشین‌ها");
+        LinearLayout screen = new LinearLayout(this);
+        screen.setGravity(Gravity.CENTER);
+        screen.setOrientation(LinearLayout.VERTICAL);
+        screen.setPadding(dp(20), dp(40), dp(20), dp(40));
+        screen.setBackground(roundGradient(new int[]{Color.rgb(35, 24, 20), BG, Color.rgb(10, 15, 21)}, 24));
+        TextView penguin = text("🐧", 64, WHITE, true);
+        penguin.setGravity(Gravity.CENTER);
+        screen.addView(penguin, params(100, 100));
+        spaceIn(screen, 18);
+        screen.addView(text("Alpine Linux", 23, WHITE, true));
+        spaceIn(screen, 8);
+        screen.addView(text("پیش‌نمایش صفحهٔ راه‌اندازی", 12, MUTED, false));
+        spaceIn(screen, 24);
+        View progress = new View(this);
+        progress.setBackground(round(ORANGE, 8));
+        screen.addView(progress, new LinearLayout.LayoutParams(dp(90), dp(5)));
+        spaceIn(screen, 26);
+        screen.addView(text("برای بازگشت، روی صفحه بزن", 11, MUTED, false));
+        content.addView(screen, new LinearLayout.LayoutParams(-1, -1));
+        screen.setOnClickListener(v -> showMachineDetails());
+    }
+
     void showDownloads() {
         setSelectedTab("دانلودها");
         content.removeAllViews();
