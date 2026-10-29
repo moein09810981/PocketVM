@@ -332,8 +332,8 @@ public class MainActivity extends Activity {
         spaceIn(details, 3);
         details.addView(text("Alpine Linux 3.20", 11, MUTED, false));
         top.addView(details, new LinearLayout.LayoutParams(0, -2, 1));
-        TextView status = text("● آماده", 10, GREEN, true);
-        status.setBackground(round(Color.rgb(19, 47, 38), 12));
+        TextView status = text("پیش‌نمایش", 10, MUTED, true);
+        status.setBackground(round(Color.rgb(43, 47, 54), 12));
         status.setPadding(dp(9), dp(6), dp(9), dp(6));
         top.addView(status);
         linux.addView(top);
@@ -395,7 +395,7 @@ public class MainActivity extends Activity {
         info.setPadding(dp(10), 0, 0, 0);
         info.addView(text("Linux", 17, WHITE, true));
         info.addView(text("Alpine Linux 3.20 (ARM64)", 11, MUTED, false));
-        info.addView(text("● آمادهٔ تنظیم", 10, GREEN, false));
+        info.addView(text("پیکربندی نمایشی · اجرا غیرفعال", 10, MUTED, false));
         top.addView(info);
         hero.addView(top);
         content.addView(hero);
