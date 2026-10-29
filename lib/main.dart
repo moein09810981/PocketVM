@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const bg = Color(0xFF0B0D12), panel = Color(0xFF151922), panel2 = Color(0xFF1B202B);
 const accent = Color(0xFFFF4B36), muted = Color(0xFF9BA3B4), green = Color(0xFF59D69B), blue = Color(0xFF7BA8FF), line = Color(0xFF292F3B);
@@ -64,8 +66,59 @@ class _DashboardState extends State<Dashboard> {
   int page = 0, ram = 2, cpu = 2, disk = 16;
   String os = 'Ubuntu';
   bool compact = false, notifications = true;
-  final machines = <Machine>[Machine('Ubuntu Linux', 'Ubuntu', 2, 2, 16)];
-  final logs = <String>['رابط کاربری آماده شد.'];
+  final machines = <Machine>[];
+  final logs = <String>[];
+  bool loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedState();
+  }
+
+  Future<void> _loadSavedState() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString('pocketvm.machines');
+      if (saved != null) {
+        final decoded = jsonDecode(saved) as List<dynamic>;
+        machines
+          ..clear()
+          ..addAll(decoded.map((item) {
+            final m = item as Map<String, dynamic>;
+            return Machine(m['name'] as String, m['os'] as String,
+              m['ram'] as int, m['cpu'] as int, m['disk'] as int,
+              running: false);
+          }));
+      }
+      if (machines.isEmpty) {
+        machines.add(Machine('Ubuntu Linux', 'Ubuntu', 2, 2, 16));
+      }
+      compact = prefs.getBool('pocketvm.compact') ?? false;
+      notifications = prefs.getBool('pocketvm.notifications') ?? true;
+      final savedLogs = prefs.getStringList('pocketvm.logs');
+      if (savedLogs != null) logs.addAll(savedLogs);
+      if (logs.isEmpty) logs.add('برنامه آماده شد.');
+    } catch (_) {
+      if (machines.isEmpty) machines.add(Machine('Ubuntu Linux', 'Ubuntu', 2, 2, 16));
+      if (logs.isEmpty) logs.add('برنامه آماده شد.');
+    }
+    if (mounted) setState(() => loaded = true);
+  }
+
+  Future<void> _persistState() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('pocketvm.machines', jsonEncode(machines.map((m) => {
+        'name': m.name, 'os': m.os, 'ram': m.ram, 'cpu': m.cpu, 'disk': m.disk,
+      }).toList()));
+      await prefs.setBool('pocketvm.compact', compact);
+      await prefs.setBool('pocketvm.notifications', notifications);
+      await prefs.setStringList('pocketvm.logs', logs.take(30).toList());
+    } catch (_) {
+      // The UI remains usable if local storage is temporarily unavailable.
+    }
+  }
 
   void notice(String message) {
     if (!notifications) return;
@@ -74,6 +127,7 @@ class _DashboardState extends State<Dashboard> {
   void record(String message) {
     logs.insert(0, TimeOfDay.now().format(context) + ' • ' + message);
     if (logs.length > 30) logs.removeLast();
+    _persistState();
   }
 
   @override
@@ -217,7 +271,8 @@ class _DashboardState extends State<Dashboard> {
     const SizedBox(height: 12),
     info('خلاصه منابع', os + ' • ' + ram.toString() + ' GB RAM • ' + cpu.toString() + ' CPU • ' + disk.toString() + ' GB', Icons.fact_check_outlined),
     SizedBox(width: double.infinity, child: FilledButton.icon(onPressed: () {
-      setState(() { machines.add(Machine(os + ' ' + (machines.length + 1).toString(), os, ram, cpu, disk)); record('ماشین نمایشی جدید ساخته شد.'); page = 1; });
+      setState(() { machines.add(Machine(os + ' ' + (machines.length + 1).toString(), os, ram, cpu, disk)); record('پیکربندی ماشین ذخیره شد؛ سیستم‌عامل هنوز اجرا نمی‌شود.'); page = 1; });
+      _persistState();
       notice('ماشین به فهرست اضافه شد.');
     }, icon: const Icon(Icons.check_rounded), label: const Text('ساخت ماشین نمایشی'))),
     const SizedBox(height: 8),
@@ -261,7 +316,7 @@ class _DashboardState extends State<Dashboard> {
       ]),
       const SizedBox(height: 12),
       Row(children: [
-        Expanded(child: FilledButton.icon(onPressed: () => setState(() { m.running = !m.running; record('وضعیت نمایشی ' + m.name + ' تغییر کرد.'); }),
+        Expanded(child: FilledButton.icon(onPressed: () => setState(() { m.running = !m.running; record(m.running ? 'پیکربندی ' + m.name + ' برای اجرا علامت‌گذاری شد؛ موتور QEMU متصل نیست.' : 'وضعیت ' + m.name + ' به خاموش برگشت.'); }); _persistState(),
           style: FilledButton.styleFrom(backgroundColor: m.running ? panel2 : accent, minimumSize: const Size(0, 41)),
           icon: Icon(m.running ? Icons.stop_rounded : Icons.play_arrow_rounded, size: 18), label: Text(m.running ? 'خاموش کردن' : 'روشن کردن'))),
         const SizedBox(width: 8),
@@ -292,6 +347,7 @@ class _DashboardState extends State<Dashboard> {
     ));
     if (yes == true && mounted) {
       setState(() { machines.remove(m); record('ماشین ' + m.name + ' حذف شد.'); });
+      _persistState();
       notice('ماشین حذف شد.');
     }
   }
@@ -325,9 +381,9 @@ class _DashboardState extends State<Dashboard> {
     section('نمایش'), const SizedBox(height: 9),
     setting(Icons.palette_outlined, 'پوسته برنامه', 'تیره با رنگ تأکیدی گرم', const Icon(Icons.check_circle_rounded, color: accent)),
     setting('view', 'کارت‌های فشرده', 'نمایش اطلاعات در فضای کمتر',
-      Switch(value: compact, activeColor: accent, onChanged: (v) => setState(() => compact = v))),
+      Switch(value: compact, activeColor: accent, onChanged: (v) => setState(() { compact = v; _persistState(); }))),
     setting(Icons.notifications_none_rounded, 'اعلان‌های داخل برنامه', 'نمایش پیام‌های وضعیت',
-      Switch(value: notifications, activeColor: accent, onChanged: (v) => setState(() => notifications = v))),
+      Switch(value: notifications, activeColor: accent, onChanged: (v) => setState(() { notifications = v; _persistState(); }))),
     const SizedBox(height: 20), section('درباره'), const SizedBox(height: 9),
     setting(Icons.memory_rounded, 'موتور مجازی', 'هنوز به QEMU متصل نشده', const Icon(Icons.info_outline_rounded, color: muted)),
     setting(Icons.font_download_outlined, 'فونت رابط', 'Vazirmatn • کمی بزرگ‌تر', const Icon(Icons.check_rounded, color: green)),
