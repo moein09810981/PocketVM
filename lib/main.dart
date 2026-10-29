@@ -49,6 +49,173 @@ class PocketVM extends StatelessWidget {
   }
 }
 
+
+class PocketVMLoadingScreen extends StatefulWidget {
+  const PocketVMLoadingScreen({super.key});
+
+  @override
+  State<PocketVMLoadingScreen> createState() => _PocketVMLoadingScreenState();
+}
+
+class _PocketVMLoadingScreenState extends State<PocketVMLoadingScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1700),
+  )..repeat();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: bg,
+      body: Stack(
+        children: [
+          Positioned(
+            top: -110,
+            right: -90,
+            child: Container(
+              width: 280,
+              height: 280,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: accent.withValues(alpha: .07),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -140,
+            left: -100,
+            child: Container(
+              width: 330,
+              height: 330,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: blue.withValues(alpha: .045),
+              ),
+            ),
+          ),
+          Center(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                final pulse = .92 + (_controller.value < .5
+                    ? _controller.value
+                    : 1 - _controller.value) * .16;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 124,
+                      height: 124,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Transform.scale(
+                            scale: .92 + _controller.value * .24,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: accent.withValues(
+                                    alpha: (1 - _controller.value) * .42,
+                                  ),
+                                  width: 1.4,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Transform.rotate(
+                            angle: _controller.value * 6.28318,
+                            child: SizedBox(
+                              width: 104,
+                              height: 104,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.2,
+                                value: _controller.value,
+                                backgroundColor: line,
+                                valueColor: const AlwaysStoppedAnimation<Color>(accent),
+                              ),
+                            ),
+                          ),
+                          Transform.scale(
+                            scale: pulse,
+                            child: Container(
+                              width: 76,
+                              height: 76,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [Color(0xFFFF8657), Color(0xFFB91F2D)],
+                                ),
+                                borderRadius: BorderRadius.circular(25),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: accent.withValues(alpha: .28),
+                                    blurRadius: 28,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.developer_board_rounded,
+                                color: Color(0xFF200C0A),
+                                size: 39,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+                    const Text(
+                      'PocketVM',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: .3,
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                    const Text(
+                      'محیط مجازی، مرتب و ساده',
+                      style: TextStyle(color: muted, fontSize: 12),
+                    ),
+                    const SizedBox(height: 34),
+                    SizedBox(
+                      width: 150,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: LinearProgressIndicator(
+                          minHeight: 3,
+                          value: null,
+                          backgroundColor: line,
+                          valueColor: const AlwaysStoppedAnimation<Color>(accent),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'در حال آماده‌سازی محیط…',
+                      style: TextStyle(color: Color(0xFF777F90), fontSize: 10),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class Machine {
   String name, os;
   int ram, cpu, disk;
@@ -103,6 +270,7 @@ class _DashboardState extends State<Dashboard> {
       if (machines.isEmpty) machines.add(Machine('Ubuntu Linux', 'Ubuntu', 2, 2, 16));
       if (logs.isEmpty) logs.add('برنامه آماده شد.');
     }
+    await Future<void>.delayed(const Duration(milliseconds: 1100));
     if (mounted) setState(() => loaded = true);
   }
 
@@ -132,6 +300,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    if (!loaded) return const PocketVMLoadingScreen();
     final pages = [homePage(), machinesPage(), createPage(), imagesPage(), settingsPage()];
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(statusBarColor: bg, statusBarIconBrightness: Brightness.light,
