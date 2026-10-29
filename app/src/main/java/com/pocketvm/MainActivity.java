@@ -24,6 +24,7 @@ public class MainActivity extends Activity {
 
     LinearLayout content;
     TextView homeTab, machinesTab, downloadsTab, settingsTab;
+    String selectedOs = "Alpine Linux";
 
     @Override
     protected void onCreate(Bundle state) {
@@ -299,23 +300,105 @@ public class MainActivity extends Activity {
         setSelectedTab("ماشین‌ها");
         content.removeAllViews();
         pageTitle("ساخت ماشین مجازی");
-        space(24);
-        content.addView(text("انتخاب سیستم‌عامل", 18, WHITE, true));
-        space(14);
-        content.addView(createMachineRow(
-                "Alpine Linux", "سبک و مناسب آزمایش", "ARM64", "◈"));
-        space(12);
-        content.addView(createMachineRow(
-                "Debian", "پایدار و همه‌کاره", "ARM64", "D"));
-        space(12);
-        content.addView(createMachineRow(
-                "Ubuntu", "محبوب و کاربردی", "ARM64", "U"));
-        space(24);
-        content.addView(text(
-                "ساخت ماشین واقعی پس از اتصال موتور QEMU فعال می‌شود.",
-                13, MUTED, false));
+
+        space(18);
+        LinearLayout hero = panel();
+        hero.setOrientation(LinearLayout.HORIZONTAL);
+        hero.setGravity(Gravity.CENTER_VERTICAL);
+        hero.setPadding(dp(16), dp(16), dp(16), dp(16));
+        hero.setBackground(roundGradient(
+                new int[]{Color.rgb(43, 28, 22), Color.rgb(20, 23, 28)}, 18));
+
+        TextView penguin = text("🐧", 35, WHITE, true);
+        penguin.setGravity(Gravity.CENTER);
+        hero.addView(penguin, params(54, 60));
+
+        LinearLayout heroInfo = new LinearLayout(this);
+        heroInfo.setOrientation(LinearLayout.VERTICAL);
+        heroInfo.setPadding(dp(12), 0, 0, 0);
+        heroInfo.addView(text("Linux", 20, WHITE, true));
+        spaceIn(heroInfo, 4);
+        heroInfo.addView(text("انتخاب سیستم‌عامل", 12, MUTED, false));
+        hero.addView(heroInfo, new LinearLayout.LayoutParams(0, -2, 1));
+        content.addView(hero);
+
         space(20);
-        actionButton("بازگشت به خانه", this::showHome);
+        content.addView(text("سیستم‌عامل", 17, WHITE, true));
+        space(5);
+        content.addView(text("توزیع موردنظرت را انتخاب کن.", 12, MUTED, false));
+        space(12);
+
+        content.addView(createOsOption("Alpine Linux",
+                "سبک و سریع · ARM64", "▲", Color.rgb(26, 89, 126)));
+        space(10);
+        content.addView(createOsOption("Debian",
+                "پایدار و حرفه‌ای · ARM64", "◉", Color.rgb(150, 20, 47)));
+        space(10);
+        content.addView(createOsOption("Ubuntu",
+                "محبوب و قدرتمند · ARM64", "◈", Color.rgb(220, 61, 24)));
+        space(10);
+        content.addView(createOsOption("Fedora",
+                "به‌روز و ایمن · ARM64", "f", Color.rgb(20, 82, 165)));
+
+        space(16);
+        LinearLayout summary = panel();
+        summary.setPadding(dp(14), dp(13), dp(14), dp(13));
+        summary.setOrientation(LinearLayout.VERTICAL);
+        summary.addView(text("انتخاب فعلی", 11, MUTED, false));
+        spaceIn(summary, 5);
+        summary.addView(text(selectedOs, 15, ORANGE, true));
+        spaceIn(summary, 5);
+        summary.addView(text("ساخت ماشین پس از اتصال موتور QEMU فعال می‌شود.",
+                11, MUTED, false));
+        content.addView(summary);
+
+        space(16);
+        actionButton("ادامه  ▶", () -> Toast.makeText(this,
+                selectedOs + " انتخاب شد؛ ساخت ماشین هنوز به موتور QEMU نیاز دارد.",
+                Toast.LENGTH_LONG).show());
+        space(10);
+        TextView back = text("بازگشت", 13, MUTED, true);
+        back.setGravity(Gravity.CENTER);
+        back.setPadding(0, dp(10), 0, dp(10));
+        back.setOnClickListener(v -> showHome());
+        content.addView(back);
+    }
+
+    View createOsOption(String name, String description,
+                        String symbol, int iconColor) {
+        boolean selected = name.equals(selectedOs);
+        LinearLayout row = new LinearLayout(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(dp(13), dp(13), dp(13), dp(13));
+        GradientDrawable background = round(
+                selected ? Color.rgb(32, 26, 23) : CARD, 16);
+        background.setStroke(dp(selected ? 1 : 1),
+                selected ? ORANGE : Color.rgb(38, 43, 51));
+        row.setBackground(background);
+
+        TextView icon = text(symbol, 22, WHITE, true);
+        icon.setGravity(Gravity.CENTER);
+        icon.setBackground(round(iconColor, 13));
+        row.addView(icon, params(44, 44));
+
+        LinearLayout info = new LinearLayout(this);
+        info.setOrientation(LinearLayout.VERTICAL);
+        info.setPadding(dp(12), 0, 0, 0);
+        info.addView(text(name, 14, WHITE, true));
+        spaceIn(info, 4);
+        info.addView(text(description, 11, MUTED, false));
+        row.addView(info, new LinearLayout.LayoutParams(0, -2, 1));
+
+        TextView radio = text(selected ? "◉" : "○", 23,
+                selected ? ORANGE : MUTED, true);
+        radio.setGravity(Gravity.CENTER);
+        row.addView(radio, params(30, 40));
+
+        row.setOnClickListener(v -> {
+            selectedOs = name;
+            showCreate();
+        });
+        return row;
     }
 
     void showDownloads() {
