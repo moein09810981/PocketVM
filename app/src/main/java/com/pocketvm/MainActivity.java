@@ -352,10 +352,10 @@ public class MainActivity extends Activity {
 
         space(14);
         content.addView(createMachineRow(
-                "Ubuntu", "Ubuntu 24.04 · هنوز ساخته نشده", "متوقف", "◈"));
+                "Ubuntu", "Ubuntu 24.04 · هنوز ساخته نشده", "پیش‌نمایش", "◈"));
         space(10);
         content.addView(createMachineRow(
-                "Debian", "Debian 12 · هنوز ساخته نشده", "متوقف", "D"));
+                "Debian", "Debian 12 · هنوز ساخته نشده", "پیش‌نمایش", "D"));
 
         space(24);
         LinearLayout storage = panel();
@@ -576,7 +576,7 @@ public class MainActivity extends Activity {
         top.addView(info);
         content.addView(top);
         space(10);
-        TextView terminal = text("PocketVM Console / Alpine Linux 3.20\\n\\nWelcome to Alpine Linux!\\nThis is a UI preview. No virtual machine is running.\\n\\nalpine:~$ _", 12, Color.rgb(214, 224, 218), false);
+        TextView terminal = text("PocketVM Console / Alpine Linux 3.20\n\nWelcome to Alpine Linux!\nThis is a UI preview. No virtual machine is running.\n\nalpine:~$ _", 12, Color.rgb(214, 224, 218), false);
         terminal.setGravity(Gravity.TOP | Gravity.LEFT);
         terminal.setTypeface(Typeface.MONOSPACE);
         terminal.setPadding(dp(14), dp(16), dp(14), dp(16));
