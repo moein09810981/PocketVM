@@ -527,32 +527,53 @@ public class MainActivity extends Activity {
         setSelectedTab("دانلودها");
         content.removeAllViews();
         pageTitle("دانلودها");
-        space(22);
+        space(12);
         content.addView(text("سیستم‌عامل‌ها", 18, WHITE, true));
-        space(12);
-        View alpineDownload = createMachineRow(
-                "Alpine Linux", "تصویر ARM64", "آمادهٔ افزودن", "◈");
-        alpineDownload.setOnClickListener(v -> Toast.makeText(this,
-                "دانلود سیستم‌عامل هنوز پیاده‌سازی نشده است.",
-                Toast.LENGTH_LONG).show());
-        content.addView(alpineDownload);
-        space(12);
-        View debianDownload = createMachineRow(
-                "Debian", "تصویر ARM64", "به‌زودی", "D");
-        debianDownload.setOnClickListener(v -> Toast.makeText(this,
-                "دانلود Debian هنوز پیاده‌سازی نشده است.",
-                Toast.LENGTH_LONG).show());
-        content.addView(debianDownload);
-        space(12);
-        View ubuntuDownload = createMachineRow(
-                "Ubuntu", "تصویر ARM64", "به‌زودی", "U");
-        ubuntuDownload.setOnClickListener(v -> Toast.makeText(this,
-                "دانلود Ubuntu هنوز پیاده‌سازی نشده است.",
-                Toast.LENGTH_LONG).show());
-        content.addView(ubuntuDownload);
-        space(18);
-        content.addView(text(
-                "هنوز دانلودی شروع نشده است.",
+        space(5);
+        content.addView(text("فهرست توزیع‌های لینوکس برای معماری ARM64",
+                11, MUTED, false));
+        space(14);
+
+        String[][] os = {
+                {"Alpine Linux", "3.20 (ARM64)", "سبک و سریع", "▲"},
+                {"Ubuntu", "24.04 (ARM64)", "محبوب و قدرتمند", "◈"},
+                {"Debian", "12 (ARM64)", "پایدار و حرفه‌ای", "D"},
+                {"Fedora", "41 (ARM64)", "به‌روز و ایمن", "f"},
+                {"Arch Linux", "ARM64", "سریع و منعطف", "A"}
+        };
+        int[] colors = {
+                Color.rgb(26, 89, 126), Color.rgb(220, 61, 24),
+                Color.rgb(150, 20, 47), Color.rgb(20, 82, 165),
+                Color.rgb(30, 94, 150)
+        };
+        for (int i = 0; i < os.length; i++) {
+            final String name = os[i][0];
+            LinearLayout item = new LinearLayout(this);
+            item.setGravity(Gravity.CENTER_VERTICAL);
+            item.setPadding(dp(12), dp(12), dp(12), dp(12));
+            item.setBackground(round(CARD, 16));
+            TextView icon = text(os[i][3], 21, WHITE, true);
+            icon.setGravity(Gravity.CENTER);
+            icon.setBackground(round(colors[i], 12));
+            item.addView(icon, params(44, 44));
+            LinearLayout info = new LinearLayout(this);
+            info.setOrientation(LinearLayout.VERTICAL);
+            info.setPadding(dp(12), 0, 0, 0);
+            info.addView(text(name, 13, WHITE, true));
+            spaceIn(info, 3);
+            info.addView(text(os[i][1] + " · " + os[i][2], 10, MUTED, false));
+            item.addView(info, new LinearLayout.LayoutParams(0, -2, 1));
+            TextView download = text("↓", 22, MUTED, true);
+            download.setGravity(Gravity.CENTER);
+            item.addView(download, params(36, 40));
+            item.setOnClickListener(v -> Toast.makeText(this,
+                    "دانلود " + name + " هنوز پیاده‌سازی نشده است.",
+                    Toast.LENGTH_LONG).show());
+            content.addView(item);
+            space(9);
+        }
+        space(6);
+        content.addView(text("هیچ فایلی دانلود نشده است.",
                 12, MUTED, false));
     }
 
@@ -560,17 +581,40 @@ public class MainActivity extends Activity {
         setSelectedTab("تنظیمات");
         content.removeAllViews();
         pageTitle("تنظیمات");
-        space(20);
-        content.addView(createMachineRow(
-                "ظاهر برنامه", "تم تیره و نارنجی", "فعال", "◐"));
-        space(10);
-        content.addView(createMachineRow(
-                "عملکرد", "مدیریت منابع ماشین مجازی", "استاندارد", "⚙"));
-        space(10);
-        content.addView(createMachineRow(
-                "دربارهٔ PocketVM", "نسخهٔ 1.0", "اطلاعات", "i"));
-        space(24);
-        actionButton("بازگشت به خانه", this::showHome);
+        space(18);
+
+        String[][] items = {
+                {"⚙", "عمومی", "زبان، ظاهر و اعلان‌ها"},
+                {"◇", "شبکه", "اتصال و دسترسی اینترنت"},
+                {"▤", "ذخیره‌سازی", "مدیریت فضای ماشین‌ها"},
+                {"◈", "عملکرد", "بهینه‌سازی و منابع"},
+                {"ⓘ", "درباره", "نسخه و اطلاعات برنامه"}
+        };
+        for (String[] item : items) {
+            LinearLayout row = new LinearLayout(this);
+            row.setGravity(Gravity.CENTER_VERTICAL);
+            row.setPadding(dp(14), dp(15), dp(14), dp(15));
+            row.setBackground(round(CARD, 12));
+            TextView icon = text(item[0], 22, WHITE, false);
+            icon.setGravity(Gravity.CENTER);
+            row.addView(icon, params(36, 42));
+            LinearLayout info = new LinearLayout(this);
+            info.setOrientation(LinearLayout.VERTICAL);
+            info.setPadding(dp(12), 0, 0, 0);
+            info.addView(text(item[1], 14, WHITE, true));
+            spaceIn(info, 4);
+            info.addView(text(item[2], 10, MUTED, false));
+            row.addView(info, new LinearLayout.LayoutParams(0, -2, 1));
+            TextView arrow = text("›", 23, MUTED, false);
+            row.addView(arrow);
+            row.setOnClickListener(v -> Toast.makeText(this,
+                    "بخش «" + item[1] + "» هنوز در حال آماده‌سازی است.",
+                    Toast.LENGTH_SHORT).show());
+            content.addView(row);
+            space(1);
+        }
+        space(22);
+        content.addView(text("PocketVM · نسخهٔ آزمایشی", 11, MUTED, false));
     }
 
     void pageTitle(String title) {
