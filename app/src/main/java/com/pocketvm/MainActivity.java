@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -25,6 +26,10 @@ public class MainActivity extends Activity {
     LinearLayout content;
     TextView homeTab, machinesTab, downloadsTab, settingsTab;
     String selectedOs = "Alpine Linux";
+    int ramValue = 12;
+    int cpuValue = 2;
+    int diskValue = 8;
+    String downloadFilter = "همه";
 
     @Override
     protected void onCreate(Bundle state) {
@@ -83,15 +88,24 @@ public class MainActivity extends Activity {
 
         content.addView(header);
 
-        space(30);
-        content.addView(text("ماشین‌های مجازی تو", 25, WHITE, true));
-        space(6);
-        content.addView(text("سیستم‌عاملت رو انتخاب کن و اجرا کن.", 14, MUTED, false));
+        space(20);
+        content.addView(text("ماشین‌های مجازی تو", 24, WHITE, true));
+        space(5);
+        content.addView(text("سیستم‌عاملت رو انتخاب کن و اجرا کن.", 13, MUTED, false));
 
         space(22);
         content.addView(createFeaturedCard());
+        space(2);
+        LinearLayout dots = new LinearLayout(this);
+        dots.setGravity(Gravity.CENTER);
+        for (int i = 0; i < 4; i++) {
+            TextView dot = text("●", 8, i == 0 ? ORANGE : Color.rgb(57, 63, 72), true);
+            dot.setGravity(Gravity.CENTER);
+            dots.addView(dot, params(14, 18));
+        }
+        content.addView(dots);
 
-        space(22);
+        space(12);
         LinearLayout dots = new LinearLayout(this);
         dots.setGravity(Gravity.CENTER);
         for (int i = 0; i < 4; i++) {
@@ -190,7 +204,7 @@ public class MainActivity extends Activity {
 
         spaceIn(card, 22);
 
-        TextView run = text("▶    اجرای ماشین", 16, Color.BLACK, true);
+        TextView run = text("اجرا    ▶", 16, Color.BLACK, true);
         run.setGravity(Gravity.CENTER);
         run.setBackground(round(ORANGE, 15));
         run.setPadding(dp(12), dp(16), dp(12), dp(16));
