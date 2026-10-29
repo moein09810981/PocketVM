@@ -106,15 +106,6 @@ public class MainActivity extends Activity {
         content.addView(dots);
 
         space(12);
-        LinearLayout dots = new LinearLayout(this);
-        dots.setGravity(Gravity.CENTER);
-        for (int i = 0; i < 4; i++) {
-            TextView dot = text("●", 8, i == 0 ? ORANGE : Color.rgb(65, 70, 78), true);
-            dot.setGravity(Gravity.CENTER);
-            dots.addView(dot, params(13, 18));
-        }
-        content.addView(dots);
-        space(12);
 
         LinearLayout titleRow = new LinearLayout(this);
         titleRow.setGravity(Gravity.CENTER_VERTICAL);
