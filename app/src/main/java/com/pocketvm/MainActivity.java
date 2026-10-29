@@ -392,39 +392,37 @@ public class MainActivity extends Activity {
         content.removeAllViews();
         setSelectedTab("ماشین‌ها");
         pageTitle("جزئیات ماشین مجازی");
-        space(18);
+        space(14);
         LinearLayout hero = panel();
-        hero.setPadding(dp(16), dp(16), dp(16), dp(16));
+        hero.setPadding(dp(14), dp(14), dp(14), dp(14));
         hero.setOrientation(LinearLayout.VERTICAL);
         LinearLayout top = new LinearLayout(this);
         top.setGravity(Gravity.CENTER_VERTICAL);
-        TextView penguin = text("🐧", 34, WHITE, true);
-        top.addView(penguin, params(54, 54));
+        top.addView(text("🐧", 32, WHITE, true), params(50, 50));
         LinearLayout info = new LinearLayout(this);
         info.setOrientation(LinearLayout.VERTICAL);
-        info.setPadding(dp(12), 0, 0, 0);
-        info.addView(text("Linux", 18, WHITE, true));
+        info.setPadding(dp(10), 0, 0, 0);
+        info.addView(text("Linux", 17, WHITE, true));
         info.addView(text("Alpine Linux 3.20 (ARM64)", 11, MUTED, false));
-        info.addView(text("● آمادهٔ تنظیم · اجرای واقعی غیرفعال", 10, GREEN, false));
+        info.addView(text("● آمادهٔ تنظیم", 10, GREEN, false));
         top.addView(info);
         hero.addView(top);
-        spaceIn(hero, 16);
-        hero.addView(text("1.2 GB RAM     ·     2 vCPU     ·     8 GB دیسک",
-                11, WHITE, false));
         content.addView(hero);
         space(18);
         content.addView(text("تنظیمات سریع", 17, WHITE, true));
         space(10);
-        content.addView(createMachineRow("حافظه", "RAM ماشین مجازی", "1.2 GB", "▤"));
-        space(10);
-        content.addView(createMachineRow("پردازنده", "تعداد هستهٔ مجازی", "2 vCPU", "⚙"));
-        space(10);
-        content.addView(createMachineRow("فضای ذخیره‌سازی", "اندازهٔ دیسک مجازی", "8 GB", "▣"));
-        space(20);
-        actionButton("▶  اجرا", () -> Toast.makeText(this,
-                "برای اجرای ماشین، ابتدا باید موتور QEMU اضافه شود.",
+        content.addView(settingSlider("حافظهٔ RAM", ramValue + " GB", ramValue, 16, "ram"));
+        space(9);
+        content.addView(settingSlider("پردازنده (vCPU)", cpuValue + " vCPU", cpuValue, 8, "cpu"));
+        space(9);
+        content.addView(settingSlider("فضای ذخیره‌سازی", diskValue + " GB", diskValue, 64, "disk"));
+        space(16);
+        actionButton("اجرا  ▶", () -> Toast.makeText(this,
+                "این پیش‌نمایش است؛ هنوز ماشین واقعی اجرا نمی‌شود.",
                 Toast.LENGTH_LONG).show());
-        space(10);
+        space(8);
+        actionButton("باز کردن کنسول", this::showConsole);
+        space(8);
         TextView back = text("بازگشت به ماشین‌ها", 13, MUTED, true);
         back.setGravity(Gravity.CENTER);
         back.setPadding(0, dp(10), 0, dp(10));
