@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 void main()=>runApp(const PocketVM());
 const bg=Color(0xFF0B0D12),panel=Color(0xFF151922),accent=Color(0xFFFF4B36),muted=Color(0xFF9BA3B4),green=Color(0xFF59D69B);
-class PocketVM extends StatelessWidget{const PocketVM({super.key});@override Widget build(BuildContext c)=>MaterialApp(debugShowCheckedModeBanner:false,title:'PocketVM',theme:ThemeData.dark().copyWith(scaffoldBackgroundColor:bg,colorScheme:const ColorScheme.dark(primary:accent,surface:panel),sliderTheme:const SliderThemeData(activeTrackColor:accent,thumbColor:accent,inactiveTrackColor:Color(0xFF29313C))),home:const Dashboard());}
+class PocketVM extends StatelessWidget{const PocketVM({super.key});@override Widget build(BuildContext c)=>MaterialApp(debugShowCheckedModeBanner:false,title:'PocketVM',theme:ThemeData.dark().copyWith(textTheme:GoogleFonts.vazirmatnTextTheme(ThemeData.dark().textTheme).apply(fontSizeFactor:1.06),primaryTextTheme:GoogleFonts.vazirmatnTextTheme(ThemeData.dark().primaryTextTheme).apply(fontSizeFactor:1.06),scaffoldBackgroundColor:bg,colorScheme:const ColorScheme.dark(primary:accent,surface:panel),sliderTheme:const SliderThemeData(activeTrackColor:accent,thumbColor:accent,inactiveTrackColor:Color(0xFF29313C))),home:const Dashboard());}
 class Machine{String name,os;int ram,cpu,disk;bool running;Machine(this.name,this.os,this.ram,this.cpu,this.disk,{this.running=false});}
 class Dashboard extends StatefulWidget{const Dashboard({super.key});@override State<Dashboard> createState()=>_DashboardState();}
 class _DashboardState extends State<Dashboard>{
