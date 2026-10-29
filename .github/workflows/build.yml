@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - access-check-20261028-2
 
 jobs:
   build:
