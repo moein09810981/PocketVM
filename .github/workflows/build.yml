@@ -18,6 +18,11 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Prepare Flutter Android project layout
+        run: |
+          mkdir -p android/app
+          cp settings.gradle build.gradle android/
+          cp -R app/. android/app/
       - name: Flutter doctor
         run: flutter doctor -v
       - name: Resolve packages
