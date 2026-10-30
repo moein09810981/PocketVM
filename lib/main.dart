@@ -401,8 +401,17 @@ class _DashboardState extends State<Dashboard> {
         icon: const Icon(Icons.tune_rounded, color: muted)),
     ]),
     const SizedBox(height: 19),
-    Container(padding: const EdgeInsets.all(18), decoration: BoxDecoration(
-      color: panel, borderRadius: BorderRadius.circular(21), border: Border.all(color: line)),
+    Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topRight, end: Alignment.bottomLeft,
+          colors: [Color(0xFF292019), Color(0xFF171615), Color(0xFF171615)],
+        ),
+        borderRadius: BorderRadius.circular(21),
+        border: Border.all(color: accent.withValues(alpha: .22)),
+        boxShadow: [BoxShadow(color: accent.withValues(alpha: .06), blurRadius: 24, offset: const Offset(0, 8))],
+      ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           const Text('محیط کاری من', style: TextStyle(color: muted, fontSize: 11)),
@@ -776,7 +785,33 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget imagesPage() => list([
-    heading('کتابخانه ایمیج', 'سیستم‌عامل‌های قابل استفاده', Icons.inventory_2_rounded),
+    heading('کتابخانه ایمیج', 'مدیریت منابع سیستم‌عامل', Icons.inventory_2_rounded),
+    const SizedBox(height: 18),
+    Container(
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF25201B), Color(0xFF171615)],
+          begin: Alignment.topRight, end: Alignment.bottomLeft,
+        ),
+        borderRadius: BorderRadius.circular(17),
+        border: Border.all(color: accent.withValues(alpha: .18)),
+      ),
+      child: Row(children: [
+        Container(
+          width: 44, height: 44,
+          decoration: BoxDecoration(color: accent.withValues(alpha: .12), borderRadius: BorderRadius.circular(13)),
+          child: const Icon(Icons.archive_rounded, color: accent),
+        ),
+        const SizedBox(width: 12),
+        const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('کتابخانه محلی', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13)),
+          SizedBox(height: 4),
+          Text('فهرست پیشنهادی سیستم‌عامل‌ها', style: TextStyle(color: muted, fontSize: 10)),
+        ])),
+        const Text('۳ مورد', style: TextStyle(color: accent, fontSize: 11, fontWeight: FontWeight.w800)),
+      ]),
+    ),
     const SizedBox(height: 18),
     Container(padding: const EdgeInsets.all(16), decoration: BoxDecoration(
       color: panel, borderRadius: BorderRadius.circular(17), border: Border.all(color: line)),
@@ -836,6 +871,35 @@ class _DashboardState extends State<Dashboard> {
 
   Widget settingsPage() => list([
     heading('تنظیمات', 'شخصی‌سازی PocketVM', Icons.tune_rounded),
+    const SizedBox(height: 18),
+    Container(
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: panel, borderRadius: BorderRadius.circular(17),
+        border: Border.all(color: line),
+      ),
+      child: Row(children: [
+        Container(
+          width: 42, height: 42,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(colors: [Color(0xFFFF922E), Color(0xFFFF5A00)]),
+            borderRadius: BorderRadius.circular(13),
+          ),
+          child: const Icon(Icons.developer_board_rounded, color: Color(0xFF200C0A)),
+        ),
+        const SizedBox(width: 11),
+        const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('PocketVM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
+          SizedBox(height: 3),
+          Text('پیش‌نمایش رابط کاربری', style: TextStyle(color: muted, fontSize: 10)),
+        ])),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+          decoration: BoxDecoration(color: accent.withValues(alpha: .1), borderRadius: BorderRadius.circular(20)),
+          child: const Text('Preview', style: TextStyle(color: accent, fontSize: 10, fontWeight: FontWeight.w800)),
+        ),
+      ]),
+    ),
     const SizedBox(height: 20),
     const Text('رابط کاربری', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
     const SizedBox(height: 10),
