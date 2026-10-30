@@ -30,7 +30,7 @@ class PocketVM extends StatelessWidget {
         colorScheme: const ColorScheme.dark(primary: accent, surface: panel, secondary: green),
         dividerColor: line,
         navigationBarTheme: const NavigationBarThemeData(
-          height: 72, backgroundColor: Color(0xFF11100F), indicatorColor: Color(0x33FF650D),
+          height: 66, backgroundColor: Color(0xFF11100F), indicatorColor: Color(0x33FF650D),
           labelTextStyle: WidgetStatePropertyAll(TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
           iconTheme: WidgetStatePropertyAll(IconThemeData(size: 22)),
         ),
@@ -265,7 +265,7 @@ class _DashboardState extends State<Dashboard> {
       if (machines.isEmpty) machines.add(Machine('Ubuntu Linux', 'Ubuntu', 2, 2, 16));
       if (logs.isEmpty) logs.add('برنامه آماده شد.');
     }
-    await Future<void>.delayed(const Duration(milliseconds: 1100));
+    await Future<void>.delayed(const Duration(milliseconds: 180));
     if (mounted) setState(() => loaded = true);
   }
 
@@ -302,7 +302,7 @@ class _DashboardState extends State<Dashboard> {
         systemNavigationBarColor: Color(0xFF11100F), systemNavigationBarIconBrightness: Brightness.light),
       child: Scaffold(
         body: SafeArea(bottom: false, child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 360),
+          duration: const Duration(milliseconds: 230),
           switchInCurve: Curves.easeOutCubic,
           switchOutCurve: Curves.easeInCubic,
           transitionBuilder: (child, a) => FadeTransition(
@@ -321,7 +321,7 @@ class _DashboardState extends State<Dashboard> {
           child: KeyedSubtree(key: ValueKey(page), child: pages[page]),
         )),
         bottomNavigationBar: NavigationBar(
-          animationDuration: const Duration(milliseconds: 420),
+          animationDuration: const Duration(milliseconds: 260),
           selectedIndex: page, onDestinationSelected: (i) {
             if (i == page) return;
             setState(() => page = i);
@@ -337,7 +337,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget list(List<Widget> children) => ListView(padding: const EdgeInsets.fromLTRB(18, 16, 18, 28), children: children);
+  Widget list(List<Widget> children) => ListView(padding: EdgeInsets.fromLTRB(compact ? 12 : 14, compact ? 10 : 12, compact ? 12 : 14, 18), children: children);
   Widget brand() => Row(children: [
     Image.asset('app/src/main/assets/verchino_original_icon.png', width: 44, height: 44, fit: BoxFit.contain),
     const SizedBox(width: 12),
@@ -376,7 +376,7 @@ class _DashboardState extends State<Dashboard> {
         style: IconButton.styleFrom(backgroundColor: panel, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13))),
         icon: const Icon(Icons.tune_rounded, color: muted)),
     ]),
-    const SizedBox(height: 19),
+    const SizedBox(height: 13),
     Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
@@ -414,7 +414,7 @@ class _DashboardState extends State<Dashboard> {
           icon: const Icon(Icons.devices_rounded, size: 18), label: const Text('مشاهده ماشین‌ها'))),
       ]),
     ),
-    const SizedBox(height: 22),
+    const SizedBox(height: 15),
     section('نمای کلی'), const SizedBox(height: 10),
     Row(children: [
       Expanded(child: stat('ماشین‌ها', machines.length.toString(), Icons.devices_rounded, accent)),
@@ -423,7 +423,7 @@ class _DashboardState extends State<Dashboard> {
       const SizedBox(width: 8),
       Expanded(child: stat('فضا', machines.fold<int>(0, (s, m) => s + m.disk).toString() + ' GB', Icons.storage_rounded, blue)),
     ]),
-    const SizedBox(height: 22),
+    const SizedBox(height: 15),
     section('ماشین‌های من', action: 'مشاهده همه', onTap: () => setState(() => page = 1)),
     const SizedBox(height: 10),
     if (machines.isEmpty)
