@@ -355,51 +355,65 @@ class _DashboardState extends State<Dashboard> {
   ]);
 
   Widget homePage() => list([
-    brand(), const SizedBox(height: 22),
-    Container(padding: const EdgeInsets.all(21), decoration: BoxDecoration(
-      gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight,
-        colors: [Color(0xFF382313), Color(0xFF24180F), Color(0xFF171615)]),
-      border: Border.all(color: accent.withValues(alpha: .24)), borderRadius: BorderRadius.circular(23),
-      boxShadow: [BoxShadow(color: accent.withValues(alpha: .06), blurRadius: 25, offset: const Offset(0, 9))]),
+    Row(children: [
+      Container(width: 43, height: 43, decoration: BoxDecoration(
+        gradient: const LinearGradient(colors: [Color(0xFFFF922E), Color(0xFFFF5A00)]),
+        borderRadius: BorderRadius.circular(14)),
+        child: const Icon(Icons.developer_board_rounded, color: Color(0xFF200C0A), size: 25)),
+      const SizedBox(width: 10),
+      const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('PocketVM', style: TextStyle(fontSize: 21, fontWeight: FontWeight.w900)),
+        Text('مدیریت محیط‌های مجازی', style: TextStyle(color: muted, fontSize: 10)),
+      ])),
+      IconButton(onPressed: () => setState(() => page = 4),
+        style: IconButton.styleFrom(backgroundColor: panel, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13))),
+        icon: const Icon(Icons.tune_rounded, color: muted)),
+    ]),
+    const SizedBox(height: 19),
+    Container(padding: const EdgeInsets.all(18), decoration: BoxDecoration(
+      color: panel, borderRadius: BorderRadius.circular(21), border: Border.all(color: line)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Container(width: 36, height: 36, decoration: BoxDecoration(color: accent.withValues(alpha: .13), borderRadius: BorderRadius.circular(11)),
-            child: const Icon(Icons.space_dashboard_rounded, color: accent)),
+          const Text('محیط کاری من', style: TextStyle(color: muted, fontSize: 11)),
           const Spacer(),
-          Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          Container(padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
             decoration: BoxDecoration(color: green.withValues(alpha: .1), borderRadius: BorderRadius.circular(20)),
-            child: const Row(children: [Icon(Icons.circle, color: green, size: 7), SizedBox(width: 6),
-              Text('رابط کاربری فعال', style: TextStyle(color: green, fontSize: 10, fontWeight: FontWeight.w700))])),
+            child: const Row(children: [Icon(Icons.circle, color: green, size: 6), SizedBox(width: 5),
+              Text('آماده', style: TextStyle(color: green, fontSize: 10, fontWeight: FontWeight.w700))])),
         ]),
-        const SizedBox(height: 20),
-        const Text('همه‌چیز،\nدر یک نگاه.', style: TextStyle(fontSize: 29, fontWeight: FontWeight.w900, height: 1.35)),
+        const SizedBox(height: 12),
+        const Text('ماشین‌های مجازی\nخودت را مدیریت کن', style: TextStyle(fontSize: 25, height: 1.4, fontWeight: FontWeight.w900)),
+        const SizedBox(height: 7),
+        const Text('پیکربندی منابع و نگهداری محیط‌های لینوکسی در یک مکان.',
+          style: TextStyle(color: muted, height: 1.7, fontSize: 11)),
+        const SizedBox(height: 16),
+        SizedBox(width: double.infinity, child: FilledButton.icon(
+          onPressed: () => setState(() => page = 2),
+          style: FilledButton.styleFrom(shape: const StadiumBorder(), minimumSize: const Size(0, 49)),
+          icon: const Icon(Icons.add_rounded, size: 20), label: const Text('ساخت ماشین جدید'))),
         const SizedBox(height: 8),
-        const Text('ماشین‌های مجازی و منابع هر محیط را از یک فضای یکپارچه مدیریت کن.',
-          style: TextStyle(color: Color(0xFFC0C4CE), height: 1.8, fontSize: 12)),
-        const SizedBox(height: 18),
-        Row(children: [
-          Expanded(child: FilledButton.icon(onPressed: () => setState(() => page = 1),
-            icon: const Icon(Icons.devices_rounded, size: 18), label: const Text('مشاهده ماشین‌ها'))),
-          const SizedBox(width: 9),
-          IconButton(tooltip: 'ساخت ماشین', onPressed: () => setState(() => page = 2),
-            style: IconButton.styleFrom(fixedSize: const Size(48, 48), backgroundColor: Colors.white.withValues(alpha: .06),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
-            icon: const Icon(Icons.add_rounded)),
-        ]),
-      ])),
-    const SizedBox(height: 24), section('نمای کلی'), const SizedBox(height: 11),
+        SizedBox(width: double.infinity, child: OutlinedButton.icon(
+          onPressed: () => setState(() => page = 1),
+          style: OutlinedButton.styleFrom(shape: const StadiumBorder(), minimumSize: const Size(0, 45)),
+          icon: const Icon(Icons.devices_rounded, size: 18), label: const Text('مشاهده ماشین‌ها'))),
+      ]),
+    ),
+    const SizedBox(height: 22),
+    section('نمای کلی'), const SizedBox(height: 10),
     Row(children: [
       Expanded(child: stat('ماشین‌ها', machines.length.toString(), Icons.devices_rounded, accent)),
-      const SizedBox(width: 9),
+      const SizedBox(width: 8),
       Expanded(child: stat('روشن', machines.where((m) => m.running).length.toString(), Icons.power_settings_new_rounded, green)),
-      const SizedBox(width: 9),
+      const SizedBox(width: 8),
       Expanded(child: stat('فضا', machines.fold<int>(0, (s, m) => s + m.disk).toString() + ' GB', Icons.storage_rounded, blue)),
     ]),
-    const SizedBox(height: 23), section('ماشین‌های اخیر', action: 'همه', onTap: () => setState(() => page = 1)),
+    const SizedBox(height: 22),
+    section('ماشین‌های من', action: 'مشاهده همه', onTap: () => setState(() => page = 1)),
     const SizedBox(height: 10),
-    if (machines.isEmpty) empty('هنوز ماشینی نساخته‌ای', 'اولین محیط مجازی خودت را بساز.', Icons.devices_other_rounded, () => setState(() => page = 2))
+    if (machines.isEmpty)
+      empty('هنوز ماشینی نداری', 'اولین پیکربندی خودت را ایجاد کن.', Icons.devices_other_rounded, () => setState(() => page = 2))
     else ...machines.take(2).map(machineCard),
-    info('وضعیت پروژه', 'این نسخه روی رابط کاربری و مدیریت نمایشی تمرکز دارد؛ موتور اجرای سیستم‌عامل هنوز متصل نشده است.', Icons.info_outline_rounded),
+    info('وضعیت موتور مجازی', 'رابط مدیریت آماده است؛ اجرای واقعی سیستم‌عامل هنوز به موتور QEMU متصل نشده است.', Icons.info_outline_rounded),
   ]);
 
   Widget stat(String label, String value, IconData icon, Color color) => Container(
