@@ -22,7 +22,7 @@ class PocketVM extends StatelessWidget {
   Widget build(BuildContext context) {
     final base = ThemeData.dark();
     return MaterialApp(
-      debugShowCheckedModeBanner: false, title: 'PocketVM',
+      debugShowCheckedModeBanner: false, title: 'ورچینو',
       theme: base.copyWith(
         scaffoldBackgroundColor: bg,
         textTheme: GoogleFonts.vazirmatnTextTheme(base.textTheme),
@@ -175,7 +175,7 @@ class _PocketVMLoadingScreenState extends State<PocketVMLoadingScreen>
                     ),
                     const SizedBox(height: 28),
                     const Text(
-                      'PocketVM',
+                      'ورچینو',
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w900,
@@ -360,10 +360,10 @@ class _DashboardState extends State<Dashboard> {
     Container(width: 46, height: 46, decoration: BoxDecoration(
       gradient: const LinearGradient(colors: [Color(0xFFFF922E), Color(0xFFFF5A00)]),
       borderRadius: BorderRadius.circular(15), boxShadow: [BoxShadow(color: accent.withValues(alpha: .18), blurRadius: 17, offset: const Offset(0, 5))]),
-      child: const Icon(Icons.developer_board_rounded, color: Color(0xFF200C0A), size: 26)),
+      child: const Icon(Icons.view_in_ar_rounded, color: Color(0xFFB9D7FF), size: 26)),
     const SizedBox(width: 12),
     const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text('PocketVM', style: TextStyle(fontSize: 23, fontWeight: FontWeight.w900, letterSpacing: -.5)),
+      Text('ورچینو', style: TextStyle(fontSize: 23, fontWeight: FontWeight.w900, letterSpacing: -.5)),
       Text('محیط مجازی، مرتب و ساده', style: TextStyle(color: muted, fontSize: 11)),
     ])),
     IconButton(tooltip: 'تنظیمات', onPressed: () => setState(() => page = 4),
@@ -390,10 +390,10 @@ class _DashboardState extends State<Dashboard> {
       Container(width: 43, height: 43, decoration: BoxDecoration(
         gradient: const LinearGradient(colors: [Color(0xFFFF922E), Color(0xFFFF5A00)]),
         borderRadius: BorderRadius.circular(14)),
-        child: const Icon(Icons.developer_board_rounded, color: Color(0xFF200C0A), size: 25)),
+        child: const Icon(Icons.view_in_ar_rounded, color: Color(0xFFB9D7FF), size: 25)),
       const SizedBox(width: 10),
       const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('PocketVM', style: TextStyle(fontSize: 21, fontWeight: FontWeight.w900)),
+        Text('ورچینو', style: TextStyle(fontSize: 21, fontWeight: FontWeight.w900)),
         Text('مدیریت محیط‌های مجازی', style: TextStyle(color: muted, fontSize: 10)),
       ])),
       IconButton(onPressed: () => setState(() => page = 4),
@@ -870,7 +870,7 @@ class _DashboardState extends State<Dashboard> {
   );
 
   Widget settingsPage() => list([
-    heading('تنظیمات', 'شخصی‌سازی PocketVM', Icons.tune_rounded),
+    heading('تنظیمات', 'شخصی‌سازی ورچینو', Icons.tune_rounded),
     const SizedBox(height: 18),
     Container(
       padding: const EdgeInsets.all(15),
@@ -885,11 +885,11 @@ class _DashboardState extends State<Dashboard> {
             gradient: const LinearGradient(colors: [Color(0xFFFF922E), Color(0xFFFF5A00)]),
             borderRadius: BorderRadius.circular(13),
           ),
-          child: const Icon(Icons.developer_board_rounded, color: Color(0xFF200C0A)),
+          child: const Icon(Icons.view_in_ar_rounded, color: Color(0xFFB9D7FF)),
         ),
         const SizedBox(width: 11),
         const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('PocketVM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
+          Text('ورچینو', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
           SizedBox(height: 3),
           Text('پیش‌نمایش رابط کاربری', style: TextStyle(color: muted, fontSize: 10)),
         ])),
@@ -929,7 +929,7 @@ class _DashboardState extends State<Dashboard> {
         ]),
       )).toList())),
     const SizedBox(height: 16),
-    const Center(child: Text('PocketVM  •  Preview', style: TextStyle(color: Color(0xFF626B7B), fontSize: 10))),
+    const Center(child: Text('ورچینو  •  Preview', style: TextStyle(color: Color(0xFF626B7B), fontSize: 10))),
   ]);
 
     Widget setting(dynamic icon, String title, String sub, Widget trailing) {
