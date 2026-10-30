@@ -366,7 +366,7 @@ class _DashboardState extends State<Dashboard> {
 
   Widget homePage() => list([
     Row(children: [
-      const Icon(Icons.view_in_ar_rounded, color: Color(0xFFB9D7FF), size: 39),
+      Image.asset('app/src/main/assets/verchino_original_icon.png', width: 44, height: 44, fit: BoxFit.contain),
       const SizedBox(width: 10),
       const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('ورچینو', style: TextStyle(fontSize: 21, fontWeight: FontWeight.w900)),
