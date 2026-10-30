@@ -44,6 +44,10 @@ class PocketVM extends StatelessWidget {
         sliderTheme: const SliderThemeData(activeTrackColor: accent, thumbColor: accent, inactiveTrackColor: line, trackHeight: 3),
         snackBarTheme: SnackBarThemeData(behavior: SnackBarBehavior.floating, backgroundColor: const Color(0xFFF4F0EC), contentTextStyle: const TextStyle(color: Color(0xFF211B17), fontSize: 13, fontWeight: FontWeight.w700), actionTextColor: accent, insetPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
       ),
+      builder: (context, child) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: child ?? const SizedBox.shrink(),
+      ),
       home: const Dashboard(),
     );
   }
@@ -473,6 +477,8 @@ class _DashboardState extends State<Dashboard> {
         border: Border.all(color: line),
       ),
       child: TextField(
+        textDirection: TextDirection.rtl,
+        textAlign: TextAlign.start,
         onChanged: (value) => setState(() => machineSearch = value),
         style: const TextStyle(fontSize: 12),
         decoration: InputDecoration(
