@@ -588,7 +588,7 @@ class _DashboardState extends State<Dashboard> {
     const SizedBox(height: 14),
     SizedBox(width: double.infinity, child: FilledButton.icon(onPressed: () {
       setState(() { machines.add(Machine(os + ' ' + (machines.length + 1).toString(), os, ram, cpu, disk)); record('پیکربندی ماشین ذخیره شد؛ سیستم‌عامل هنوز اجرا نمی‌شود.'); page = 1; });
-      _persistState(); notice('ماشین به فهرست اضافه شد.');
+      notice('ماشین به فهرست اضافه شد.');
     }, icon: const Icon(Icons.add_rounded), label: const Text('ذخیره پیکربندی'))),
     const SizedBox(height: 7),
     const Text('در نسخه فعلی، این کار پیکربندی نمایشی می‌سازد و سیستم‌عامل اجرا نمی‌شود.',
@@ -656,7 +656,7 @@ class _DashboardState extends State<Dashboard> {
       ]),
       const SizedBox(height: 12),
       Row(children: [
-        Expanded(child: FilledButton.icon(onPressed: () { setState(() { m.running = !m.running; record(m.running ? 'پیکربندی ' + m.name + ' برای اجرا علامت‌گذاری شد؛ موتور QEMU متصل نیست.' : 'وضعیت ' + m.name + ' به خاموش برگشت.'); }); _persistState(); },
+        Expanded(child: FilledButton.icon(onPressed: () { setState(() { m.running = !m.running; record(m.running ? 'پیکربندی ' + m.name + ' برای اجرا علامت‌گذاری شد؛ موتور QEMU متصل نیست.' : 'وضعیت ' + m.name + ' به خاموش برگشت.'); }); },
           style: FilledButton.styleFrom(backgroundColor: m.running ? panel2 : accent, minimumSize: const Size(0, 41)),
           icon: Icon(m.running ? Icons.stop_rounded : Icons.play_arrow_rounded, size: 18), label: Text(m.running ? 'خاموش کردن' : 'روشن کردن'))),
         const SizedBox(width: 6),
@@ -766,7 +766,6 @@ class _DashboardState extends State<Dashboard> {
     ));
     if (yes == true && mounted) {
       setState(() { machines.remove(m); record('ماشین ' + m.name + ' حذف شد.'); });
-      _persistState();
       notice('ماشین حذف شد.');
     }
   }
