@@ -145,29 +145,11 @@ class _PocketVMLoadingScreenState extends State<PocketVMLoadingScreen>
                           ),
                           Transform.scale(
                             scale: pulse,
-                            child: Container(
-                              width: 76,
-                              height: 76,
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [Color(0xFFFF922E), Color(0xFFFF5A00)],
-                                ),
-                                borderRadius: BorderRadius.circular(25),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: accent.withValues(alpha: .28),
-                                    blurRadius: 28,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
-                              child: const Icon(
-                                Icons.developer_board_rounded,
-                                color: Color(0xFF200C0A),
-                                size: 39,
-                              ),
+                            child: Image.asset(
+                              'app/src/main/assets/verchino_original_icon.png',
+                              width: 92,
+                              height: 92,
+                              fit: BoxFit.contain,
                             ),
                           ),
                         ],
@@ -357,7 +339,7 @@ class _DashboardState extends State<Dashboard> {
 
   Widget list(List<Widget> children) => ListView(padding: const EdgeInsets.fromLTRB(18, 16, 18, 28), children: children);
   Widget brand() => Row(children: [
-    const Icon(Icons.view_in_ar_rounded, color: Color(0xFFB9D7FF), size: 39),
+    Image.asset('app/src/main/assets/verchino_original_icon.png', width: 44, height: 44, fit: BoxFit.contain),
     const SizedBox(width: 12),
     const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text('ورچینو', style: TextStyle(fontSize: 23, fontWeight: FontWeight.w900, letterSpacing: -.5)),
@@ -873,13 +855,9 @@ class _DashboardState extends State<Dashboard> {
         border: Border.all(color: line),
       ),
       child: Row(children: [
-        Container(
-          width: 42, height: 42,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [Color(0xFFFF922E), Color(0xFFFF5A00)]),
-            borderRadius: BorderRadius.circular(13),
-          ),
-          child: const Icon(Icons.view_in_ar_rounded, color: Color(0xFFB9D7FF)),
+        Image.asset(
+          'app/src/main/assets/verchino_original_icon.png',
+          width: 48, height: 48, fit: BoxFit.contain,
         ),
         const SizedBox(width: 11),
         const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
