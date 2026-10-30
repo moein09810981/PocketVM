@@ -4,14 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const bg = Color(0xFF0B0D12), panel = Color(0xFF151922), panel2 = Color(0xFF1B202B);
-const accent = Color(0xFFFF4B36), muted = Color(0xFF9BA3B4), green = Color(0xFF59D69B), blue = Color(0xFF7BA8FF), line = Color(0xFF292F3B);
+const bg = Color(0xFF0B0A09), panel = Color(0xFF171615), panel2 = Color(0xFF22201E);
+const accent = Color(0xFFFF650D), muted = Color(0xFFA6A09B), green = Color(0xFF59D69B), blue = Color(0xFF7BA8FF), line = Color(0xFF2B2825);
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: bg, statusBarIconBrightness: Brightness.light,
-    systemNavigationBarColor: Color(0xFF10131A), systemNavigationBarIconBrightness: Brightness.light,
+    systemNavigationBarColor: Color(0xFF11100F), systemNavigationBarIconBrightness: Brightness.light,
   ));
   runApp(const PocketVM());
 }
@@ -30,7 +30,7 @@ class PocketVM extends StatelessWidget {
         colorScheme: const ColorScheme.dark(primary: accent, surface: panel, secondary: green),
         dividerColor: line,
         navigationBarTheme: const NavigationBarThemeData(
-          height: 72, backgroundColor: Color(0xFF10131A), indicatorColor: Color(0x333B2528),
+          height: 72, backgroundColor: Color(0xFF11100F), indicatorColor: Color(0x33FF650D),
           labelTextStyle: WidgetStatePropertyAll(TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
           iconTheme: WidgetStatePropertyAll(IconThemeData(size: 22)),
         ),
@@ -152,7 +152,7 @@ class _PocketVMLoadingScreenState extends State<PocketVMLoadingScreen>
                                 gradient: const LinearGradient(
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
-                                  colors: [Color(0xFFFF8657), Color(0xFFB91F2D)],
+                                  colors: [Color(0xFFFF922E), Color(0xFFFF5A00)],
                                 ),
                                 borderRadius: BorderRadius.circular(25),
                                 boxShadow: [
@@ -304,7 +304,7 @@ class _DashboardState extends State<Dashboard> {
     final pages = [homePage(), machinesPage(), createPage(), imagesPage(), settingsPage()];
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(statusBarColor: bg, statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Color(0xFF10131A), systemNavigationBarIconBrightness: Brightness.light),
+        systemNavigationBarColor: Color(0xFF11100F), systemNavigationBarIconBrightness: Brightness.light),
       child: Scaffold(
         body: SafeArea(bottom: false, child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 260), switchInCurve: Curves.easeOutCubic,
@@ -327,7 +327,7 @@ class _DashboardState extends State<Dashboard> {
   Widget list(List<Widget> children) => ListView(padding: const EdgeInsets.fromLTRB(18, 16, 18, 28), children: children);
   Widget brand() => Row(children: [
     Container(width: 46, height: 46, decoration: BoxDecoration(
-      gradient: const LinearGradient(colors: [Color(0xFFFF8657), Color(0xFFB91F2D)]),
+      gradient: const LinearGradient(colors: [Color(0xFFFF922E), Color(0xFFFF5A00)]),
       borderRadius: BorderRadius.circular(15), boxShadow: [BoxShadow(color: accent.withValues(alpha: .18), blurRadius: 17, offset: const Offset(0, 5))]),
       child: const Icon(Icons.developer_board_rounded, color: Color(0xFF200C0A), size: 26)),
     const SizedBox(width: 12),
@@ -358,7 +358,7 @@ class _DashboardState extends State<Dashboard> {
     brand(), const SizedBox(height: 22),
     Container(padding: const EdgeInsets.all(21), decoration: BoxDecoration(
       gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight,
-        colors: [Color(0xFF382023), Color(0xFF21171D), Color(0xFF151922)]),
+        colors: [Color(0xFF382313), Color(0xFF24180F), Color(0xFF171615)]),
       border: Border.all(color: accent.withValues(alpha: .24)), borderRadius: BorderRadius.circular(23),
       boxShadow: [BoxShadow(color: accent.withValues(alpha: .06), blurRadius: 25, offset: const Offset(0, 9))]),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
