@@ -42,7 +42,7 @@ class PocketVM extends StatelessWidget {
           foregroundColor: Colors.white, side: const BorderSide(color: line),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)))),
         sliderTheme: const SliderThemeData(activeTrackColor: accent, thumbColor: accent, inactiveTrackColor: line, trackHeight: 3),
-        snackBarTheme: const SnackBarThemeData(behavior: SnackBarBehavior.floating, backgroundColor: panel2),
+        snackBarTheme: SnackBarThemeData(behavior: SnackBarBehavior.floating, backgroundColor: const Color(0xFFF4F0EC), contentTextStyle: const TextStyle(color: Color(0xFF211B17), fontSize: 13, fontWeight: FontWeight.w700), actionTextColor: accent, insetPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
       ),
       home: const Dashboard(),
     );
