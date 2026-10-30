@@ -314,9 +314,22 @@ class _DashboardState extends State<Dashboard> {
         systemNavigationBarColor: Color(0xFF11100F), systemNavigationBarIconBrightness: Brightness.light),
       child: Scaffold(
         body: SafeArea(bottom: false, child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 260), switchInCurve: Curves.easeOutCubic,
-          transitionBuilder: (child, a) => FadeTransition(opacity: a, child: SlideTransition(
-            position: Tween<Offset>(begin: const Offset(0, .025), end: Offset.zero).animate(a), child: child)),
+          duration: const Duration(milliseconds: 360),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeInCubic,
+          transitionBuilder: (child, a) => FadeTransition(
+            opacity: a,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, .035), end: Offset.zero,
+              ).animate(CurvedAnimation(parent: a, curve: Curves.easeOutCubic)),
+              child: ScaleTransition(
+                scale: Tween<double>(begin: .985, end: 1).animate(
+                  CurvedAnimation(parent: a, curve: Curves.easeOutCubic)),
+                child: child,
+              ),
+            ),
+          ),
           child: KeyedSubtree(key: ValueKey(page), child: pages[page]),
         )),
         bottomNavigationBar: NavigationBar(selectedIndex: page, onDestinationSelected: (i) => setState(() => page = i),
@@ -554,8 +567,21 @@ class _DashboardState extends State<Dashboard> {
     ]),
   );
 
-  Widget machineCard(Machine m) => AnimatedContainer(
-    duration: const Duration(milliseconds: 220), margin: EdgeInsets.only(bottom: compact ? 7 : 10),
+  Widget machineCard(Machine m) => TweenAnimationBuilder<double>(
+    key: ObjectKey(m),
+    tween: Tween<double>(begin: .94, end: 1),
+    duration: const Duration(milliseconds: 420),
+    curve: Curves.easeOutCubic,
+    builder: (context, value, child) => Opacity(
+      opacity: value.clamp(0, 1),
+      child: Transform.translate(
+        offset: Offset(0, 14 * (1 - value)),
+        child: Transform.scale(scale: value, child: child),
+      ),
+    ),
+    child: AnimatedContainer(
+    duration: const Duration(milliseconds: 300), curve: Curves.easeOutCubic,
+    margin: EdgeInsets.only(bottom: compact ? 7 : 10),
     padding: EdgeInsets.all(compact ? 12 : 15),
     decoration: BoxDecoration(color: panel, borderRadius: BorderRadius.circular(18),
       border: Border.all(color: m.running ? green.withValues(alpha: .25) : line),
@@ -571,7 +597,18 @@ class _DashboardState extends State<Dashboard> {
         ])),
         Container(padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
           decoration: BoxDecoration(color: (m.running ? green : muted).withValues(alpha: .1), borderRadius: BorderRadius.circular(20)),
-          child: Text(m.running ? 'روشن' : 'خاموش', style: TextStyle(color: m.running ? green : muted, fontSize: 10, fontWeight: FontWeight.w700))),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 240),
+            transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(scale: animation, child: child),
+            ),
+            child: Text(
+              m.running ? 'روشن' : 'خاموش',
+              key: ValueKey(m.running),
+              style: TextStyle(color: m.running ? green : muted, fontSize: 10, fontWeight: FontWeight.w700),
+            ),
+          )),
       ]),
       const SizedBox(height: 13), Container(height: 1, color: line), const SizedBox(height: 12),
       Row(children: [
@@ -594,6 +631,7 @@ class _DashboardState extends State<Dashboard> {
           icon: const Icon(Icons.delete_outline_rounded, color: muted)),
       ]),
     ]),
+  ),
   );
 
   void showMachineDetails(Machine m) {
@@ -779,7 +817,9 @@ class _DashboardState extends State<Dashboard> {
         subtitle: Text(sub, style: const TextStyle(fontSize: 10, color: muted)), trailing: trailing));
   }
 
-  Widget info(String title, String body, IconData icon) => Container(
+  Widget info(String title, String body, IconData icon) => AnimatedContainer(
+    duration: const Duration(milliseconds: 280),
+    curve: Curves.easeOutCubic,
     margin: const EdgeInsets.only(bottom: 10), padding: const EdgeInsets.all(15),
     decoration: BoxDecoration(color: panel, borderRadius: BorderRadius.circular(16), border: Border.all(color: line)),
     child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
