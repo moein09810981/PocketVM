@@ -232,6 +232,13 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   int page = 0, ram = 2, cpu = 2, disk = 16;
   String os = 'Ubuntu';
+  String machineFilter = 'همه';
+
+  List<Machine> get visibleMachines => machines.where((m) {
+    if (machineFilter == 'روشن') return m.running;
+    if (machineFilter == 'خاموش') return !m.running;
+    return true;
+  }).toList();
   bool compact = false, notifications = true;
   final machines = <Machine>[];
   final logs = <String>[];
@@ -439,7 +446,24 @@ class _DashboardState extends State<Dashboard> {
         Container(width: 1, height: 38, color: line),
         Expanded(child: _machineSummary('در حال اجرا', machines.where((m) => m.running).length.toString(), Icons.play_circle_outline_rounded, green)),
       ])),
-    const SizedBox(height: 20),
+    const SizedBox(height: 17),
+    Row(children: ['همه', 'روشن', 'خاموش'].map((filter) => Expanded(
+      child: Padding(
+        padding: const EdgeInsetsDirectional.only(end: 6),
+        child: ChoiceChip(
+          label: Center(child: Text(filter)),
+          selected: machineFilter == filter,
+          onSelected: (_) => setState(() => machineFilter = filter),
+          selectedColor: accent.withValues(alpha: .18),
+          backgroundColor: panel,
+          side: BorderSide(color: machineFilter == filter ? accent.withValues(alpha: .5) : line),
+          labelStyle: TextStyle(color: machineFilter == filter ? accent : muted, fontSize: 11, fontWeight: FontWeight.w800),
+          showCheckmark: false,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      ),
+    )).toList()),
+    const SizedBox(height: 12),
     Row(children: [
       const Expanded(child: Text('همه ماشین‌ها', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900))),
       Text(machines.length.toString() + ' مورد', style: const TextStyle(color: muted, fontSize: 11)),
@@ -447,7 +471,9 @@ class _DashboardState extends State<Dashboard> {
     const SizedBox(height: 11),
     if (machines.isEmpty)
       empty('هنوز ماشینی نداری', 'اولین محیط مجازی خودت را بساز.', Icons.devices_other_rounded, () => setState(() => page = 2))
-    else ...machines.map(machineCard),
+    else if (visibleMachines.isEmpty)
+      info('موردی پیدا نشد', 'در فیلتر «' + machineFilter + '» ماشینی وجود ندارد.', Icons.filter_alt_off_rounded)
+    else ...visibleMachines.map(machineCard),
     info('وضعیت موتور مجازی', 'این صفحه فعلاً پیکربندی‌ها را مدیریت می‌کند؛ اجرای واقعی سیستم‌عامل هنوز به QEMU متصل نیست.', Icons.info_outline_rounded),
   ]);
 
