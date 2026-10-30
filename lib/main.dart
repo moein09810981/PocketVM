@@ -338,7 +338,12 @@ class _DashboardState extends State<Dashboard> {
           ),
           child: KeyedSubtree(key: ValueKey(page), child: pages[page]),
         )),
-        bottomNavigationBar: NavigationBar(selectedIndex: page, onDestinationSelected: (i) => setState(() => page = i),
+        bottomNavigationBar: NavigationBar(
+          animationDuration: const Duration(milliseconds: 420),
+          selectedIndex: page, onDestinationSelected: (i) {
+            if (i == page) return;
+            setState(() => page = i);
+          },
           destinations: const [
             NavigationDestination(icon: Icon(Icons.grid_view_rounded), label: 'خانه'),
             NavigationDestination(icon: Icon(Icons.devices_outlined), label: 'ماشین‌ها'),
@@ -498,6 +503,8 @@ class _DashboardState extends State<Dashboard> {
           selectedColor: accent.withValues(alpha: .18),
           backgroundColor: panel,
           side: BorderSide(color: machineFilter == filter ? accent.withValues(alpha: .5) : line),
+          elevation: machineFilter == filter ? 1 : 0,
+          pressElevation: 2,
           labelStyle: TextStyle(color: machineFilter == filter ? accent : muted, fontSize: 11, fontWeight: FontWeight.w800),
           showCheckmark: false,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -547,10 +554,17 @@ class _DashboardState extends State<Dashboard> {
           decoration: BoxDecoration(color: os == entry.$1 ? accent.withValues(alpha: .09) : panel2,
             borderRadius: BorderRadius.circular(13), border: Border.all(color: os == entry.$1 ? accent.withValues(alpha: .6) : Colors.transparent)),
           child: ListTile(dense: true, onTap: () => setState(() => os = entry.$1),
-            leading: Icon(entry.$2, color: os == entry.$1 ? accent : muted, size: 20),
+            leading: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 220),
+              transitionBuilder: (child, animation) => ScaleTransition(scale: animation, child: child),
+              child: Icon(entry.$2, key: ValueKey(os == entry.$1), color: os == entry.$1 ? accent : muted, size: 20),
+            ),
             title: Text(entry.$1, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
-            trailing: Icon(os == entry.$1 ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: os == entry.$1 ? accent : muted, size: 19))),
+            trailing: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 180),
+              child: Icon(os == entry.$1 ? Icons.radio_button_checked : Icons.radio_button_off,
+                key: ValueKey(os == entry.$1), color: os == entry.$1 ? accent : muted, size: 19),
+            ))),
         ),
       ]),
     ),
@@ -788,18 +802,36 @@ class _DashboardState extends State<Dashboard> {
     info('دانلود هنوز فعال نیست', 'این موارد فعلاً فقط نمونه‌های رابط کاربری هستند؛ فایل ISO دریافت یا نصب نمی‌شود.', Icons.info_outline_rounded),
   ]);
 
-    Widget imageItem(String title, String sub, IconData icon, Color color) => Container(
-    margin: const EdgeInsets.only(bottom: 9), padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(color: panel, borderRadius: BorderRadius.circular(16), border: Border.all(color: line)),
-    child: Row(children: [
-      Container(width: 43, height: 43, decoration: BoxDecoration(color: color.withValues(alpha: .1), borderRadius: BorderRadius.circular(13)), child: Icon(icon, color: color)),
-      const SizedBox(width: 12),
-      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
-        Text(sub, style: const TextStyle(color: muted, fontSize: 10)),
-      ])),
-      IconButton(onPressed: () => notice('این مورد در نسخه نمایشی است.'), icon: const Icon(Icons.chevron_left_rounded, color: muted)),
-    ]),
+    Widget imageItem(String title, String sub, IconData icon, Color color) => TweenAnimationBuilder<double>(
+    key: ValueKey(title),
+    tween: Tween<double>(begin: .96, end: 1),
+    duration: const Duration(milliseconds: 360),
+    curve: Curves.easeOutCubic,
+    builder: (context, value, child) => Opacity(
+      opacity: value.clamp(0, 1),
+      child: Transform.translate(offset: Offset(0, 9 * (1 - value)), child: child),
+    ),
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => notice('اطلاعات این ایمیج فعلاً نمایشی است و دانلود فعال نیست.'),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 9),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(color: panel, borderRadius: BorderRadius.circular(16), border: Border.all(color: line)),
+          child: Row(children: [
+            Container(width: 43, height: 43, decoration: BoxDecoration(color: color.withValues(alpha: .1), borderRadius: BorderRadius.circular(13)), child: Icon(icon, color: color)),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
+              Text(sub, style: const TextStyle(color: muted, fontSize: 10)),
+            ])),
+            const Icon(Icons.chevron_left_rounded, color: muted),
+          ]),
+        ),
+      ),
+    ),
   );
 
   Widget settingsPage() => list([
@@ -838,11 +870,27 @@ class _DashboardState extends State<Dashboard> {
 
     Widget setting(dynamic icon, String title, String sub, Widget trailing) {
     final IconData data = icon == 'view' ? Icons.view_agenda_outlined : icon as IconData;
-    return Container(margin: const EdgeInsets.only(bottom: 8), decoration: BoxDecoration(color: panel, borderRadius: BorderRadius.circular(15), border: Border.all(color: line)),
-      child: ListTile(contentPadding: const EdgeInsets.symmetric(horizontal: 13, vertical: 2),
-        leading: Container(width: 38, height: 38, decoration: BoxDecoration(color: panel2, borderRadius: BorderRadius.circular(11)), child: Icon(data, color: muted, size: 20)),
-        title: Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
-        subtitle: Text(sub, style: const TextStyle(fontSize: 10, color: muted)), trailing: trailing));
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOutCubic,
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(color: panel, borderRadius: BorderRadius.circular(15), border: Border.all(color: line)),
+      child: Material(
+        color: Colors.transparent,
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 13, vertical: 2),
+          leading: AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            width: 38, height: 38,
+            decoration: BoxDecoration(color: panel2, borderRadius: BorderRadius.circular(11)),
+            child: Icon(data, color: muted, size: 20),
+          ),
+          title: Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
+          subtitle: Text(sub, style: const TextStyle(fontSize: 10, color: muted)),
+          trailing: trailing,
+        ),
+      ),
+    );
   }
 
   Widget info(String title, String body, IconData icon) => AnimatedContainer(
