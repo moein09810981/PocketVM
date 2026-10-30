@@ -265,7 +265,6 @@ class _DashboardState extends State<Dashboard> {
       if (machines.isEmpty) machines.add(Machine('Ubuntu Linux', 'Ubuntu', 2, 2, 16));
       if (logs.isEmpty) logs.add('برنامه آماده شد.');
     }
-    await Future<void>.delayed(const Duration(milliseconds: 180));
     if (mounted) setState(() => loaded = true);
   }
 
@@ -296,7 +295,6 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     if (!loaded) return const PocketVMLoadingScreen();
-    final pages = [homePage(), machinesPage(), createPage(), imagesPage(), settingsPage()];
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(statusBarColor: bg, statusBarIconBrightness: Brightness.light,
         systemNavigationBarColor: Color(0xFF11100F), systemNavigationBarIconBrightness: Brightness.light),
@@ -318,7 +316,7 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
           ),
-          child: KeyedSubtree(key: ValueKey(page), child: pages[page]),
+          child: KeyedSubtree(key: ValueKey(page), child: _currentPage()),
         )),
         bottomNavigationBar: NavigationBar(
           animationDuration: const Duration(milliseconds: 260),
@@ -335,6 +333,19 @@ class _DashboardState extends State<Dashboard> {
           ]),
       ),
     );
+  }
+
+  // Build only the visible page. Previously all five page trees were recreated
+  // on every state update, including pages that were not on screen.
+  Widget _currentPage() {
+    switch (page) {
+      case 0: return homePage();
+      case 1: return machinesPage();
+      case 2: return createPage();
+      case 3: return imagesPage();
+      case 4: return settingsPage();
+      default: return homePage();
+    }
   }
 
   Widget list(List<Widget> children) => ListView(padding: EdgeInsets.fromLTRB(compact ? 12 : 14, compact ? 10 : 12, compact ? 12 : 14, 18), children: children);
