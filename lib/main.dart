@@ -426,43 +426,99 @@ class _DashboardState extends State<Dashboard> {
   );
 
   Widget machinesPage() => list([
-    heading('ماشین‌های مجازی', 'محیط‌ها و منابع اختصاص‌یافته', Icons.devices_rounded), const SizedBox(height: 20),
-    Row(children: [Expanded(child: Text(machines.length.toString() + ' محیط ثبت‌شده', style: const TextStyle(color: muted, fontSize: 12))),
-      FilledButton.icon(onPressed: () => setState(() => page = 2), icon: const Icon(Icons.add, size: 18), label: const Text('ماشین جدید'))]),
-    const SizedBox(height: 14),
-    if (machines.isEmpty) empty('فهرست خالی است', 'با ساخت یک ماشین، اینجا نمایش داده می‌شود.', Icons.devices_other_rounded, () => setState(() => page = 2))
+    Row(children: [
+      Expanded(child: heading('ماشین‌ها', 'مدیریت محیط‌های مجازی', Icons.devices_rounded)),
+      IconButton(onPressed: () => setState(() => page = 2), icon: const Icon(Icons.add_rounded, color: accent),
+        style: IconButton.styleFrom(backgroundColor: accent.withValues(alpha: .12), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)))),
+    ]),
+    const SizedBox(height: 18),
+    Container(padding: const EdgeInsets.all(15), decoration: BoxDecoration(
+      color: panel, borderRadius: BorderRadius.circular(17), border: Border.all(color: line)),
+      child: Row(children: [
+        Expanded(child: _machineSummary('کل محیط‌ها', machines.length.toString(), Icons.devices_rounded, accent)),
+        Container(width: 1, height: 38, color: line),
+        Expanded(child: _machineSummary('در حال اجرا', machines.where((m) => m.running).length.toString(), Icons.play_circle_outline_rounded, green)),
+      ])),
+    const SizedBox(height: 20),
+    Row(children: [
+      const Expanded(child: Text('همه ماشین‌ها', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900))),
+      Text(machines.length.toString() + ' مورد', style: const TextStyle(color: muted, fontSize: 11)),
+    ]),
+    const SizedBox(height: 11),
+    if (machines.isEmpty)
+      empty('هنوز ماشینی نداری', 'اولین محیط مجازی خودت را بساز.', Icons.devices_other_rounded, () => setState(() => page = 2))
     else ...machines.map(machineCard),
-    info('یادآوری', 'روشن و خاموش کردن در این پیش‌نمایش فقط وضعیت ظاهری را تغییر می‌دهد.', Icons.lightbulb_outline_rounded),
+    info('وضعیت موتور مجازی', 'این صفحه فعلاً پیکربندی‌ها را مدیریت می‌کند؛ اجرای واقعی سیستم‌عامل هنوز به QEMU متصل نیست.', Icons.info_outline_rounded),
   ]);
 
-  Widget createPage() => list([
-    heading('ساخت ماشین', 'مشخصات محیط جدید را انتخاب کن', Icons.add_box_rounded), const SizedBox(height: 22),
-    const Text('۰۱  سیستم‌عامل', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
-    const SizedBox(height: 10),
-    ...['Ubuntu', 'Debian', 'Alpine Linux', 'Other Linux'].map((s) => AnimatedContainer(
-      duration: const Duration(milliseconds: 170), margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(color: os == s ? accent.withValues(alpha: .08) : panel,
-        borderRadius: BorderRadius.circular(15), border: Border.all(color: os == s ? accent.withValues(alpha: .65) : line)),
-      child: ListTile(onTap: () => setState(() => os = s), leading: Icon(Icons.album_outlined, color: os == s ? accent : muted),
-        title: Text(s, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
-        trailing: Icon(os == s ? Icons.radio_button_checked : Icons.radio_button_off, color: os == s ? accent : muted)))),
-    const SizedBox(height: 15), const Text('۰۲  منابع سخت‌افزاری', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
-    const SizedBox(height: 10),
-    resource('حافظه RAM', ram.toString() + ' GB', ram.toDouble(), 1, 8, (v) => setState(() => ram = v.round()), Icons.memory_rounded),
-    resource('پردازنده', cpu.toString() + ' هسته', cpu.toDouble(), 1, 4, (v) => setState(() => cpu = v.round()), Icons.developer_board_rounded),
-    resource('فضای دیسک', disk.toString() + ' GB', disk.toDouble(), 8, 64, (v) => setState(() => disk = v.round()), Icons.storage_rounded),
-    const SizedBox(height: 12),
-    info('خلاصه منابع', os + ' • ' + ram.toString() + ' GB RAM • ' + cpu.toString() + ' CPU • ' + disk.toString() + ' GB', Icons.fact_check_outlined),
+  Widget _machineSummary(String title, String value, IconData icon, Color color) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 8),
+    child: Row(children: [
+      Icon(icon, color: color, size: 21), const SizedBox(width: 9),
+      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(value, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 19)),
+        Text(title, style: const TextStyle(color: muted, fontSize: 10)),
+      ]),
+    ]),
+  );
+
+    Widget createPage() => list([
+    heading('ماشین جدید', 'یک پیکربندی تازه بساز', Icons.add_box_rounded),
+    const SizedBox(height: 20),
+    Container(padding: const EdgeInsets.all(16), decoration: BoxDecoration(
+      color: panel, borderRadius: BorderRadius.circular(18), border: Border.all(color: line)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text('۱  انتخاب سیستم‌عامل', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
+        const SizedBox(height: 12),
+        ...[
+          ('Ubuntu', Icons.circle_outlined),
+          ('Debian', Icons.all_inclusive_rounded),
+          ('Alpine Linux', Icons.terrain_rounded),
+          ('Other Linux', Icons.terminal_rounded),
+        ].map((entry) => AnimatedContainer(
+          duration: const Duration(milliseconds: 160), margin: const EdgeInsets.only(bottom: 7),
+          decoration: BoxDecoration(color: os == entry.$1 ? accent.withValues(alpha: .09) : panel2,
+            borderRadius: BorderRadius.circular(13), border: Border.all(color: os == entry.$1 ? accent.withValues(alpha: .6) : Colors.transparent)),
+          child: ListTile(dense: true, onTap: () => setState(() => os = entry.$1),
+            leading: Icon(entry.$2, color: os == entry.$1 ? accent : muted, size: 20),
+            title: Text(entry.$1, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+            trailing: Icon(os == entry.$1 ? Icons.radio_button_checked : Icons.radio_button_off,
+              color: os == entry.$1 ? accent : muted, size: 19))),
+        ),
+      ]),
+    ),
+    const SizedBox(height: 15),
+    Container(padding: const EdgeInsets.all(16), decoration: BoxDecoration(
+      color: panel, borderRadius: BorderRadius.circular(18), border: Border.all(color: line)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text('۲  تخصیص منابع', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
+        const SizedBox(height: 12),
+        resource('حافظه RAM', ram.toString() + ' GB', ram.toDouble(), 1, 8, (v) => setState(() => ram = v.round()), Icons.memory_rounded),
+        resource('پردازنده', cpu.toString() + ' هسته', cpu.toDouble(), 1, 4, (v) => setState(() => cpu = v.round()), Icons.developer_board_rounded),
+        resource('فضای دیسک', disk.toString() + ' GB', disk.toDouble(), 8, 64, (v) => setState(() => disk = v.round()), Icons.storage_rounded),
+      ]),
+    ),
+    const SizedBox(height: 13),
+    Container(padding: const EdgeInsets.all(15), decoration: BoxDecoration(
+      color: accent.withValues(alpha: .07), borderRadius: BorderRadius.circular(16), border: Border.all(color: accent.withValues(alpha: .18))),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text('خلاصه پیکربندی', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900)),
+        const SizedBox(height: 9),
+        Text(os + '  •  ' + ram.toString() + ' GB RAM  •  ' + cpu.toString() + ' CPU  •  ' + disk.toString() + ' GB',
+          style: const TextStyle(color: muted, fontSize: 11)),
+      ]),
+    ),
+    const SizedBox(height: 14),
     SizedBox(width: double.infinity, child: FilledButton.icon(onPressed: () {
       setState(() { machines.add(Machine(os + ' ' + (machines.length + 1).toString(), os, ram, cpu, disk)); record('پیکربندی ماشین ذخیره شد؛ سیستم‌عامل هنوز اجرا نمی‌شود.'); page = 1; });
-      _persistState();
-      notice('ماشین به فهرست اضافه شد.');
-    }, icon: const Icon(Icons.check_rounded), label: const Text('ساخت ماشین نمایشی'))),
-    const SizedBox(height: 8),
-    const Text('این کار فقط یک مورد نمایشی می‌سازد و سیستم‌عامل اجرا نمی‌شود.', textAlign: TextAlign.center, style: TextStyle(color: muted, fontSize: 10)),
+      _persistState(); notice('ماشین به فهرست اضافه شد.');
+    }, icon: const Icon(Icons.add_rounded), label: const Text('ذخیره پیکربندی'))),
+    const SizedBox(height: 7),
+    const Text('در نسخه فعلی، این کار پیکربندی نمایشی می‌سازد و سیستم‌عامل اجرا نمی‌شود.',
+      textAlign: TextAlign.center, style: TextStyle(color: muted, fontSize: 10, height: 1.6)),
   ]);
 
-  Widget resource(String title, String value, double v, double min, double max, ValueChanged<double> change, IconData icon) => Container(
+    Widget resource(String title, String value, double v, double min, double max, ValueChanged<double> change, IconData icon) => Container(
     margin: const EdgeInsets.only(bottom: 9), padding: const EdgeInsets.fromLTRB(14, 11, 14, 5),
     decoration: BoxDecoration(color: panel, borderRadius: BorderRadius.circular(15), border: Border.all(color: line)),
     child: Column(children: [
@@ -536,16 +592,33 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget imagesPage() => list([
-    heading('ایمیج‌ها', 'فایل‌های سیستم‌عامل و منابع نصب', Icons.inventory_2_rounded), const SizedBox(height: 20),
-    info('کتابخانه ایمیج‌ها', 'این فهرست نمونه است و هنوز به منبع دانلود فایل واقعی متصل نیست.', Icons.folder_open_rounded),
-    const SizedBox(height: 8), section('سیستم‌عامل‌های پیشنهادی'), const SizedBox(height: 10),
-    imageItem('Ubuntu 24.04 LTS', 'Linux • فایل ISO', Icons.circle_outlined, blue),
-    imageItem('Debian 12', 'Linux • پایدار', Icons.all_inclusive_rounded, accent),
-    imageItem('Alpine Linux', 'Linux • کم‌حجم', Icons.terrain_rounded, green),
-    const SizedBox(height: 4), info('دانلود غیرفعال است', 'موارد بالا فقط برای تکمیل ظاهر صفحه هستند؛ فایلی دانلود نمی‌شود.', Icons.cloud_off_rounded),
+    heading('کتابخانه ایمیج', 'سیستم‌عامل‌های قابل استفاده', Icons.inventory_2_rounded),
+    const SizedBox(height: 18),
+    Container(padding: const EdgeInsets.all(16), decoration: BoxDecoration(
+      color: panel, borderRadius: BorderRadius.circular(17), border: Border.all(color: line)),
+      child: Row(children: [
+        Container(width: 44, height: 44, decoration: BoxDecoration(color: accent.withValues(alpha: .12), borderRadius: BorderRadius.circular(13)),
+          child: const Icon(Icons.folder_open_rounded, color: accent)),
+        const SizedBox(width: 12),
+        const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('مخزن ایمیج‌ها', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13)),
+          SizedBox(height: 3),
+          Text('مدیریت فایل‌های نصب سیستم‌عامل', style: TextStyle(color: muted, fontSize: 10)),
+        ])),
+        const Icon(Icons.cloud_off_rounded, color: muted),
+      ]),
+    ),
+    const SizedBox(height: 20),
+    const Text('سیستم‌عامل‌های پیشنهادی', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
+    const SizedBox(height: 10),
+    imageItem('Ubuntu 24.04 LTS', 'مناسب استفاده عمومی • Linux', Icons.circle_outlined, blue),
+    imageItem('Debian 12', 'پایدار و قابل اتکا • Linux', Icons.all_inclusive_rounded, accent),
+    imageItem('Alpine Linux', 'سبک و کم‌حجم • Linux', Icons.terrain_rounded, green),
+    const SizedBox(height: 5),
+    info('دانلود هنوز فعال نیست', 'این موارد فعلاً فقط نمونه‌های رابط کاربری هستند؛ فایل ISO دریافت یا نصب نمی‌شود.', Icons.info_outline_rounded),
   ]);
 
-  Widget imageItem(String title, String sub, IconData icon, Color color) => Container(
+    Widget imageItem(String title, String sub, IconData icon, Color color) => Container(
     margin: const EdgeInsets.only(bottom: 9), padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(color: panel, borderRadius: BorderRadius.circular(16), border: Border.all(color: line)),
     child: Row(children: [
@@ -560,20 +633,28 @@ class _DashboardState extends State<Dashboard> {
   );
 
   Widget settingsPage() => list([
-    heading('تنظیمات', 'ظاهر و رفتار رابط برنامه', Icons.tune_rounded), const SizedBox(height: 20),
-    section('نمایش'), const SizedBox(height: 9),
-    setting(Icons.palette_outlined, 'پوسته برنامه', 'تیره با رنگ تأکیدی گرم', const Icon(Icons.check_circle_rounded, color: accent)),
+    heading('تنظیمات', 'شخصی‌سازی PocketVM', Icons.tune_rounded),
+    const SizedBox(height: 20),
+    const Text('رابط کاربری', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
+    const SizedBox(height: 10),
+    setting(Icons.palette_outlined, 'پوسته برنامه', 'تیره با تأکید نارنجی', const Icon(Icons.check_circle_rounded, color: accent)),
     setting('view', 'کارت‌های فشرده', 'نمایش اطلاعات در فضای کمتر',
       Switch(value: compact, activeColor: accent, onChanged: (v) => setState(() { compact = v; _persistState(); }))),
     setting(Icons.notifications_none_rounded, 'اعلان‌های داخل برنامه', 'نمایش پیام‌های وضعیت',
       Switch(value: notifications, activeColor: accent, onChanged: (v) => setState(() { notifications = v; _persistState(); }))),
-    const SizedBox(height: 20), section('درباره'), const SizedBox(height: 9),
-    setting(Icons.memory_rounded, 'موتور مجازی', 'هنوز به QEMU متصل نشده', const Icon(Icons.info_outline_rounded, color: muted)),
-    setting(Icons.font_download_outlined, 'فونت رابط', 'Vazirmatn • کمی بزرگ‌تر', const Icon(Icons.check_rounded, color: green)),
-    setting(Icons.code_rounded, 'ساخته‌شده با', 'Flutter • Dart', const Icon(Icons.chevron_left_rounded, color: muted)),
-    const SizedBox(height: 20), section('گزارش فعالیت', action: 'پاک‌کردن', onTap: () => setState(() => logs.clear())),
-    const SizedBox(height: 9),
-    if (logs.isEmpty) info('گزارشی نیست', 'فعالیت‌های بعدی اینجا نمایش داده می‌شوند.', Icons.receipt_long_outlined)
+    const SizedBox(height: 18),
+    const Text('درباره برنامه', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
+    const SizedBox(height: 10),
+    setting(Icons.memory_rounded, 'موتور مجازی', 'اتصال QEMU هنوز انجام نشده', const Icon(Icons.info_outline_rounded, color: muted)),
+    setting(Icons.font_download_outlined, 'فونت', 'Vazirmatn', const Icon(Icons.check_rounded, color: green)),
+    setting(Icons.code_rounded, 'فناوری', 'Flutter • Dart', const Icon(Icons.chevron_left_rounded, color: muted)),
+    const SizedBox(height: 18),
+    Row(children: [
+      const Expanded(child: Text('گزارش فعالیت', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900))),
+      TextButton(onPressed: () => setState(() { logs.clear(); _persistState(); }), child: const Text('پاک‌کردن', style: TextStyle(color: accent))),
+    ]),
+    const SizedBox(height: 8),
+    if (logs.isEmpty) info('گزارشی وجود ندارد', 'فعالیت‌های بعدی اینجا نمایش داده می‌شوند.', Icons.receipt_long_outlined)
     else Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: panel, borderRadius: BorderRadius.circular(16), border: Border.all(color: line)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: logs.take(8).map((s) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 6), child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -581,10 +662,11 @@ class _DashboardState extends State<Dashboard> {
           Expanded(child: Text(s, style: const TextStyle(color: muted, fontSize: 11, height: 1.5))),
         ]),
       )).toList())),
-    const SizedBox(height: 16), const Center(child: Text('PocketVM • UI Preview', style: TextStyle(color: Color(0xFF626B7B), fontSize: 10))),
+    const SizedBox(height: 16),
+    const Center(child: Text('PocketVM  •  Preview', style: TextStyle(color: Color(0xFF626B7B), fontSize: 10))),
   ]);
 
-  Widget setting(dynamic icon, String title, String sub, Widget trailing) {
+    Widget setting(dynamic icon, String title, String sub, Widget trailing) {
     final IconData data = icon == 'view' ? Icons.view_agenda_outlined : icon as IconData;
     return Container(margin: const EdgeInsets.only(bottom: 8), decoration: BoxDecoration(color: panel, borderRadius: BorderRadius.circular(15), border: Border.all(color: line)),
       child: ListTile(contentPadding: const EdgeInsets.symmetric(horizontal: 13, vertical: 2),
