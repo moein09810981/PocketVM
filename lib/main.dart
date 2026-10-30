@@ -357,10 +357,7 @@ class _DashboardState extends State<Dashboard> {
 
   Widget list(List<Widget> children) => ListView(padding: const EdgeInsets.fromLTRB(18, 16, 18, 28), children: children);
   Widget brand() => Row(children: [
-    Container(width: 46, height: 46, decoration: BoxDecoration(
-      gradient: const LinearGradient(colors: [Color(0xFFFF922E), Color(0xFFFF5A00)]),
-      borderRadius: BorderRadius.circular(15), boxShadow: [BoxShadow(color: accent.withValues(alpha: .18), blurRadius: 17, offset: const Offset(0, 5))]),
-      child: const Icon(Icons.view_in_ar_rounded, color: Color(0xFFB9D7FF), size: 26)),
+    const Icon(Icons.view_in_ar_rounded, color: Color(0xFFB9D7FF), size: 39),
     const SizedBox(width: 12),
     const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text('ورچینو', style: TextStyle(fontSize: 23, fontWeight: FontWeight.w900, letterSpacing: -.5)),
@@ -387,10 +384,7 @@ class _DashboardState extends State<Dashboard> {
 
   Widget homePage() => list([
     Row(children: [
-      Container(width: 43, height: 43, decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: [Color(0xFFFF922E), Color(0xFFFF5A00)]),
-        borderRadius: BorderRadius.circular(14)),
-        child: const Icon(Icons.view_in_ar_rounded, color: Color(0xFFB9D7FF), size: 25)),
+      const Icon(Icons.view_in_ar_rounded, color: Color(0xFFB9D7FF), size: 39),
       const SizedBox(width: 10),
       const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('ورچینو', style: TextStyle(fontSize: 21, fontWeight: FontWeight.w900)),
