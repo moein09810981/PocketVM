@@ -32,6 +32,8 @@ jobs:
         run: rm -f test/widget_test.dart
       - name: Resolve packages
         run: flutter pub get
+      - name: Generate Android launcher icon
+        run: dart run flutter_launcher_icons
       - name: Analyze Dart
         run: flutter analyze --no-fatal-infos
       - name: Set supported Gradle wrapper version
