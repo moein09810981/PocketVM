@@ -584,11 +584,89 @@ class _DashboardState extends State<Dashboard> {
         Expanded(child: FilledButton.icon(onPressed: () { setState(() { m.running = !m.running; record(m.running ? 'پیکربندی ' + m.name + ' برای اجرا علامت‌گذاری شد؛ موتور QEMU متصل نیست.' : 'وضعیت ' + m.name + ' به خاموش برگشت.'); }); _persistState(); },
           style: FilledButton.styleFrom(backgroundColor: m.running ? panel2 : accent, minimumSize: const Size(0, 41)),
           icon: Icon(m.running ? Icons.stop_rounded : Icons.play_arrow_rounded, size: 18), label: Text(m.running ? 'خاموش کردن' : 'روشن کردن'))),
-        const SizedBox(width: 8),
+        const SizedBox(width: 6),
+        IconButton(tooltip: 'جزئیات ماشین', onPressed: () => showMachineDetails(m),
+          style: IconButton.styleFrom(backgroundColor: panel2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+          icon: const Icon(Icons.info_outline_rounded, color: blue)),
+        const SizedBox(width: 4),
         IconButton(tooltip: 'حذف ماشین', onPressed: () => deleteMachine(m),
           style: IconButton.styleFrom(backgroundColor: panel2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
           icon: const Icon(Icons.delete_outline_rounded, color: muted)),
       ]),
+    ]),
+  );
+
+  void showMachineDetails(Machine m) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: panel,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(child: Container(width: 42, height: 4, decoration: BoxDecoration(
+                color: line, borderRadius: BorderRadius.circular(10)))),
+              const SizedBox(height: 20),
+              Row(children: [
+                Container(width: 48, height: 48, decoration: BoxDecoration(
+                  color: accent.withValues(alpha: .12), borderRadius: BorderRadius.circular(15)),
+                  child: const Icon(Icons.computer_rounded, color: accent, size: 25)),
+                const SizedBox(width: 12),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(m.name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900)),
+                  Text(m.os + ' • پیکربندی لینوکس', style: const TextStyle(color: muted, fontSize: 11)),
+                ])),
+                Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(color: (m.running ? green : muted).withValues(alpha: .1),
+                    borderRadius: BorderRadius.circular(20)),
+                  child: Text(m.running ? 'روشن' : 'خاموش',
+                    style: TextStyle(color: m.running ? green : muted, fontSize: 10, fontWeight: FontWeight.w800))),
+              ]),
+              const SizedBox(height: 20),
+              const Text('منابع تخصیص‌یافته', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 10),
+              Row(children: [
+                Expanded(child: _detailResource(Icons.memory_rounded, 'حافظه RAM', m.ram.toString() + ' GB')),
+                const SizedBox(width: 8),
+                Expanded(child: _detailResource(Icons.developer_board_rounded, 'پردازنده', m.cpu.toString() + ' هسته')),
+              ]),
+              const SizedBox(height: 8),
+              _detailResource(Icons.storage_rounded, 'فضای دیسک', m.disk.toString() + ' GB'),
+              const SizedBox(height: 14),
+              info('وضعیت اجرا', m.running
+                ? 'این ماشین فقط در رابط برنامه روشن علامت‌گذاری شده است؛ اجرای واقعی سیستم‌عامل هنوز فعال نیست.'
+                : 'این پیکربندی ذخیره شده است. برای اجرای واقعی سیستم‌عامل، اتصال موتور QEMU لازم است.',
+                Icons.info_outline_rounded),
+              SizedBox(width: double.infinity, child: OutlinedButton.icon(
+                onPressed: () => Navigator.pop(sheetContext),
+                icon: const Icon(Icons.check_rounded, size: 18),
+                label: const Text('بستن جزئیات'))),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _detailResource(IconData icon, String label, String value) => Container(
+    padding: const EdgeInsets.all(13),
+    decoration: BoxDecoration(color: panel2, borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: line)),
+    child: Row(children: [
+      Icon(icon, color: accent, size: 19),
+      const SizedBox(width: 9),
+      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(label, style: const TextStyle(color: muted, fontSize: 10)),
+        const SizedBox(height: 3),
+        Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
+      ])),
     ]),
   );
 
