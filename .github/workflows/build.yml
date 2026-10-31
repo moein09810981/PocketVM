@@ -1,44 +1,51 @@
-
-name: Build PocketVM APK
-
+name: Build PocketVM Flutter APK
 on:
   workflow_dispatch:
   push:
     branches:
       - main
-
+      - access-check-20261028-2
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout project
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - uses: subosito/flutter-action@v2
         with:
-          gradle-version: '8.11.1'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v4
+          channel: stable
+          cache: true
+      - name: Generate Flutter Android wrapper
+        run: flutter create --platforms=android --project-name=pocketvm .
+      - name: Prepare Flutter Android project layout
+        run: |
+          rm -f android/build.gradle.kts android/app/build.gradle.kts
+          mkdir -p android/app
+          cp settings.gradle build.gradle android/
+          cp -R app/. android/app/
+      - name: Flutter doctor
+        run: flutter doctor -v
+      - name: Remove generated starter test
+        run: rm -f test/widget_test.dart
+      - name: Resolve packages
+        run: flutter pub get
+      - name: Generate Android launcher icon
+        run: dart run flutter_launcher_icons
+      - name: Analyze Dart
+        run: flutter analyze --no-fatal-infos
+      - name: Set supported Gradle wrapper version
+        run: |
+          if [ -f android/gradle/wrapper/gradle-wrapper.properties ]; then
+            sed -i 's#gradle-8\.11\.1-\(all\|bin\)\.zip#gradle-8.14.3-\1.zip#' android/gradle/wrapper/gradle-wrapper.properties
+          fi
+      - name: Build APK with Gradle
+        run: |
+          cd android
+          ./gradlew :app:assembleDebug --stacktrace --info
+      - uses: actions/upload-artifact@v4
         with:
-          packages: ''
-
-      - name: Install Android SDK packages
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
-
-      - name: Build APK
-        run: gradle assembleDebug --stacktrace
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: PocketVM-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: PocketVM-Flutter-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
