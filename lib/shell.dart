@@ -25,7 +25,12 @@ class _ShellState extends State<Shell> {
       const SettingsPage(),
     ];
     return Scaffold(
-      body: IndexedStack(index: _i, children: pages),
+      // A fresh page per tab so its entrance animation plays on every switch.
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 240),
+        switchInCurve: Curves.easeOut,
+        child: KeyedSubtree(key: ValueKey(_i), child: pages[_i]),
+      ),
       bottomNavigationBar: _NavBar(index: _i, onTap: _go),
     );
   }
@@ -64,11 +69,12 @@ class _NavBar extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 180),
+                        AnimatedScale(
+                          scale: i == index ? 1.12 : 1,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeOutBack,
                           child: Icon(
                             i == index ? _items[i].$2 : _items[i].$1,
-                            key: ValueKey(i == index),
                             size: 25,
                             color: i == index ? G.accent : G.muted,
                           ),

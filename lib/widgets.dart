@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'fx.dart';
 import 'models.dart';
 import 'theme.dart';
 
@@ -370,27 +371,31 @@ class GCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final br = BorderRadius.circular(radius);
-    return Material(
-      color: Colors.transparent,
-      borderRadius: br,
-      child: Ink(
-        decoration: BoxDecoration(
-          color: gradient == null ? (color ?? G.card) : null,
-          gradient: gradient,
-          borderRadius: br,
-          border: Border.all(color: borderColor ?? G.line),
-        ),
-        child: InkWell(
-          borderRadius: br,
-          onTap: onTap,
-          child: Padding(padding: padding, child: child),
+    return PressScale(
+      enabled: onTap != null,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: br,
+        child: Ink(
+          decoration: BoxDecoration(
+            color: gradient == null ? (color ?? G.card) : null,
+            gradient: gradient,
+            borderRadius: br,
+            border: Border.all(color: borderColor ?? G.line),
+          ),
+          child: InkWell(
+            borderRadius: br,
+            onTap: onTap,
+            child: Padding(padding: padding, child: child),
+          ),
         ),
       ),
     );
   }
 }
 
-class GButton extends StatelessWidget {
+/// Main action button. The primary style has a soft pulsing glow.
+class GButton extends StatefulWidget {
   const GButton({
     super.key,
     required this.label,
@@ -406,45 +411,89 @@ class GButton extends StatelessWidget {
   final double height;
 
   @override
+  State<GButton> createState() => _GButtonState();
+}
+
+class _GButtonState extends State<GButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _glow = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 1900));
+
+  bool get _wantsGlow => !widget.outlined && widget.onTap != null;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_wantsGlow) _glow.repeat(reverse: true);
+  }
+
+  @override
+  void didUpdateWidget(covariant GButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_wantsGlow && !_glow.isAnimating) {
+      _glow.repeat(reverse: true);
+    } else if (!_wantsGlow && _glow.isAnimating) {
+      _glow.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _glow.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final fg = outlined ? G.text : G.onAccent;
+    final fg = widget.outlined ? G.text : G.onAccent;
     final br = BorderRadius.circular(17);
-    return Opacity(
-      opacity: onTap == null ? .5 : 1,
-      child: Material(
-        color: Colors.transparent,
-        child: Ink(
-          decoration: BoxDecoration(
-            gradient: outlined ? null : G.gradient,
-            color: outlined ? G.card2 : null,
-            borderRadius: br,
-            boxShadow: outlined
-                ? null
-                : [
-                    BoxShadow(
-                        color: G.accent.withValues(alpha: .3),
-                        blurRadius: 18,
-                        offset: const Offset(0, 6)),
-                  ],
-          ),
+    return PressScale(
+      scale: .97,
+      enabled: widget.onTap != null,
+      child: Opacity(
+        opacity: widget.onTap == null ? .5 : 1,
+        child: AnimatedBuilder(
+          animation: _glow,
           child: InkWell(
             borderRadius: br,
-            onTap: onTap,
+            onTap: widget.onTap,
             child: SizedBox(
-              height: height,
+              height: widget.height,
               child: Center(
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  if (icon != null) ...[
-                    Icon(icon, size: 24, color: fg),
+                  if (widget.icon != null) ...[
+                    Icon(widget.icon, size: 24, color: fg),
                     const SizedBox(width: 8),
                   ],
-                  Text(label,
+                  Text(widget.label,
                       style: TextStyle(
                           color: fg, fontSize: 17, fontWeight: FontWeight.w800)),
                 ]),
               ),
             ),
           ),
+          builder: (context, child) {
+            final g = Curves.easeInOut.transform(_glow.value);
+            return Material(
+              color: Colors.transparent,
+              child: Ink(
+                decoration: BoxDecoration(
+                  gradient: widget.outlined ? null : G.gradient,
+                  color: widget.outlined ? G.card2 : null,
+                  borderRadius: br,
+                  boxShadow: widget.outlined
+                      ? null
+                      : [
+                          BoxShadow(
+                              color: G.accent.withValues(alpha: .18 + .22 * g),
+                              blurRadius: 14 + 12 * g,
+                              offset: const Offset(0, 6)),
+                        ],
+                ),
+                child: child,
+              ),
+            );
+          },
         ),
       ),
     );
