@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../fx.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
@@ -14,6 +15,9 @@ class DownloadsPage extends StatefulWidget {
 class _DownloadsPageState extends State<DownloadsPage> {
   static const _tabs = ['همه', 'در حال دانلود', 'تکمیل شده'];
   int _tab = 0;
+
+  void _catalog() =>
+      Navigator.of(context).push(fadeRoute<void>(const OsPickerPage()));
 
   @override
   Widget build(BuildContext context) => SafeArea(
@@ -50,8 +54,7 @@ class _DownloadsPageState extends State<DownloadsPage> {
                     icon: Icons.add_rounded,
                     bordered: true,
                     color: G.accent,
-                    onTap: () => Navigator.of(context)
-                        .push(fadeRoute<void>(const OsPickerPage())),
+                    onTap: _catalog,
                   ),
                 ]),
               ),
@@ -92,32 +95,23 @@ class _DownloadsPageState extends State<DownloadsPage> {
               const SizedBox(height: 14),
               Expanded(
                 child: list.isEmpty
-                    ? Center(
-                        child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.cloud_download_outlined,
-                                  color: G.muted, size: 48),
-                              const SizedBox(height: 12),
-                              const Text('دانلودی وجود ندارد',
-                                  textDirection: TextDirection.rtl,
-                                  style: TextStyle(color: G.muted)),
-                              const SizedBox(height: 16),
-                              SizedBox(
-                                width: 220,
-                                child: GButton(
-                                  label: 'سیستم‌عامل‌ها',
-                                  height: 48,
-                                  outlined: true,
-                                  onTap: () => Navigator.of(context).push(
-                                      fadeRoute<void>(const OsPickerPage())),
-                                ),
-                              ),
-                            ]),
+                    ? EmptyState(
+                        icon: Icons.cloud_download_outlined,
+                        title: 'دانلودی وجود ندارد',
+                        subtitle: 'از کاتالوگ، سیستم‌عامل مورد نظرت را دانلود کن',
+                        actionLabel: 'سیستم‌عامل‌ها',
+                        onAction: _catalog,
                       )
                     : ListView(
                         padding: const EdgeInsets.fromLTRB(18, 0, 18, 20),
-                        children: [for (final it in list) _tile(it)],
+                        children: [
+                          for (var i = 0; i < list.length; i++)
+                            FadeSlideIn(
+                              key: ValueKey(list[i].distroId),
+                              index: i,
+                              child: _tile(list[i]),
+                            ),
+                        ],
                       ),
               ),
             ]);

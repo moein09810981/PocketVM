@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../fx.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
@@ -17,6 +18,27 @@ class OsPickerPage extends StatefulWidget {
 
 class _OsPickerPageState extends State<OsPickerPage> {
   OsCategory? _filter;
+  final _search = TextEditingController();
+  String _q = '';
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  bool _matches(Distro d) {
+    if (_filter != null && d.category != _filter) return false;
+    if (_q.isEmpty) return true;
+    return d.name.toLowerCase().contains(_q) ||
+        d.version.toLowerCase().contains(_q) ||
+        d.tagline.contains(_q);
+  }
+
+  OutlineInputBorder _border(Color c) => OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: c),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +53,44 @@ class _OsPickerPageState extends State<OsPickerPage> {
         child: ListenableBuilder(
           listenable: appState,
           builder: (context, _) {
-            final list = distros
-                .where((d) => _filter == null || d.category == _filter)
-                .toList();
+            final list = distros.where(_matches).toList();
             return Column(children: [
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 18),
                 child: GTopBar(title: 'انتخاب سیستم‌عامل', back: true),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(18, 4, 18, 14),
+                padding: const EdgeInsets.fromLTRB(18, 2, 18, 12),
+                child: TextField(
+                  controller: _search,
+                  onChanged: (v) => setState(() => _q = v.trim().toLowerCase()),
+                  style: const TextStyle(fontSize: 14.5),
+                  decoration: InputDecoration(
+                    hintText: 'جستجو',
+                    hintStyle: const TextStyle(color: G.muted),
+                    isDense: true,
+                    filled: true,
+                    fillColor: G.card,
+                    prefixIcon:
+                        const Icon(Icons.search_rounded, color: G.muted),
+                    suffixIcon: _q.isEmpty
+                        ? null
+                        : IconButton(
+                            icon: const Icon(Icons.close_rounded,
+                                color: G.muted, size: 20),
+                            onPressed: () {
+                              _search.clear();
+                              setState(() => _q = '');
+                            },
+                          ),
+                    border: _border(G.line),
+                    enabledBorder: _border(G.line),
+                    focusedBorder: _border(G.accent),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
                 child: Row(children: [
                   for (final c in chips)
                     Expanded(
@@ -75,10 +125,23 @@ class _OsPickerPageState extends State<OsPickerPage> {
                 ]),
               ),
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(18, 0, 18, 20),
-                  children: [for (final d in list) _tile(context, d)],
-                ),
+                child: list.isEmpty
+                    ? const EmptyState(
+                        icon: Icons.search_off_rounded,
+                        title: 'سیستم‌عاملی پیدا نشد',
+                        subtitle: 'نام دیگری را امتحان کن یا فیلتر را عوض کن',
+                      )
+                    : ListView(
+                        padding: const EdgeInsets.fromLTRB(18, 0, 18, 20),
+                        children: [
+                          for (var i = 0; i < list.length; i++)
+                            FadeSlideIn(
+                              key: ValueKey(list[i].id),
+                              index: i,
+                              child: _tile(context, list[i]),
+                            ),
+                        ],
+                      ),
               ),
             ]);
           },

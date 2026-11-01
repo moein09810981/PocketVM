@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../actions.dart';
+import '../fx.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
@@ -9,6 +10,9 @@ import 'create.dart';
 class MachinesPage extends StatelessWidget {
   const MachinesPage({super.key});
 
+  void _create(BuildContext context) =>
+      Navigator.of(context).push(fadeRoute<void>(const CreatePage()));
+
   @override
   Widget build(BuildContext context) => SafeArea(
         bottom: false,
@@ -16,59 +20,72 @@ class MachinesPage extends StatelessWidget {
           listenable: appState,
           builder: (context, _) {
             final ms = appState.machines;
-            return ListView(
-              padding: const EdgeInsets.fromLTRB(18, 0, 18, 24),
-              children: [
-                GTopBar(
+            return Column(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: GTopBar(
                   title: 'ماشین‌های من',
                   action: RoundIconButton(
                     icon: Icons.add_rounded,
                     bordered: true,
                     color: G.accent,
-                    onTap: () => Navigator.of(context)
-                        .push(fadeRoute<void>(const CreatePage())),
+                    onTap: () => _create(context),
                   ),
                 ),
-                const SizedBox(height: 8),
-                if (ms.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 60),
-                    child: Center(
-                      child: Text('ماشینی وجود ندارد',
-                          textDirection: TextDirection.rtl,
-                          style: TextStyle(color: G.muted, fontSize: 15)),
-                    ),
-                  ),
-                for (final m in ms) _MachineCard(m),
-                const SizedBox(height: 6),
-                GCard(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text('تعداد ماشین‌ها  ${ms.length}',
-                          style: const TextStyle(
-                              color: G.muted, fontSize: 13)),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(children: [
-                      const Text('فضای اختصاص‌یافته',
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w600)),
-                      const Spacer(),
-                      Text(
-                        '${appState.allocatedGb.toInt()} GB / ${AppState.storageLimitGb.toInt()} GB',
-                        style: const TextStyle(color: G.muted, fontSize: 13),
+              ),
+              Expanded(
+                child: ms.isEmpty
+                    ? EmptyState(
+                        icon: Icons.desktop_windows_outlined,
+                        title: 'هنوز ماشینی نساخته‌ای',
+                        subtitle:
+                            'یک ماشین مجازی بساز و سیستم‌عامل دلخواهت را روی گوشی اجرا کن',
+                        actionLabel: 'ساخت ماشین جدید',
+                        onAction: () => _create(context),
+                      )
+                    : ListView(
+                        padding: const EdgeInsets.fromLTRB(18, 8, 18, 24),
+                        children: [
+                          for (var i = 0; i < ms.length; i++)
+                            FadeSlideIn(
+                                index: i, child: _MachineCard(ms[i])),
+                          const SizedBox(height: 6),
+                          FadeSlideIn(
+                            index: ms.length,
+                            child: GCard(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(children: [
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                      'تعداد ماشین‌ها  ${ms.length}',
+                                      style: const TextStyle(
+                                          color: G.muted, fontSize: 13)),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(children: [
+                                  const Text('فضای اختصاص‌یافته',
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600)),
+                                  const Spacer(),
+                                  Text(
+                                    '${appState.allocatedGb.toInt()} GB / ${AppState.storageLimitGb.toInt()} GB',
+                                    style: const TextStyle(
+                                        color: G.muted, fontSize: 13),
+                                  ),
+                                ]),
+                                const SizedBox(height: 12),
+                                GBar(
+                                    value: appState.allocatedGb /
+                                        AppState.storageLimitGb),
+                              ]),
+                            ),
+                          ),
+                        ],
                       ),
-                    ]),
-                    const SizedBox(height: 12),
-                    GBar(
-                        value:
-                            appState.allocatedGb / AppState.storageLimitGb),
-                  ]),
-                ),
-              ],
-            );
+              ),
+            ]);
           },
         ),
       );
