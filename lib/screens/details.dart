@@ -47,10 +47,25 @@ class _DetailsPageState extends State<DetailsPage> {
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(m.name,
-                                      style: const TextStyle(
-                                          fontSize: 21,
-                                          fontWeight: FontWeight.w800)),
+                                  InkWell(
+                                    borderRadius: BorderRadius.circular(8),
+                                    onTap: () => renameMachine(context, m),
+                                    child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Flexible(
+                                            child: Text(m.name,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                    fontSize: 21,
+                                                    fontWeight:
+                                                        FontWeight.w800)),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          const Icon(Icons.edit_outlined,
+                                              size: 18, color: G.muted),
+                                        ]),
+                                  ),
                                   const SizedBox(height: 2),
                                   Text('${d.full} (${d.arch})',
                                       style: const TextStyle(

@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../actions.dart';
+import '../fx.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
@@ -37,92 +38,112 @@ class _HomePageState extends State<HomePage> {
             return ListView(
               padding: const EdgeInsets.fromLTRB(18, 10, 18, 24),
               children: [
-                Row(children: [
-                  const GlacierLogo(size: 46),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(appName,
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.1)),
-                          SizedBox(height: 2),
-                          Text(appTagline,
-                              style: TextStyle(fontSize: 12, color: G.muted)),
-                        ]),
-                  ),
-                  RoundIconButton(
-                    icon: Icons.settings_outlined,
-                    color: G.accent,
-                    onTap: () => widget.onNav(3),
-                  ),
-                ]),
-                const SizedBox(height: 18),
-                if (featured.isEmpty)
-                  _EmptyCard(
-                    onCreate: () => Navigator.of(context)
-                        .push(fadeRoute<void>(const CreatePage())),
-                  )
-                else ...[
-                  SizedBox(
-                    height: 250,
-                    child: PageView.builder(
-                      controller: _pc,
-                      itemCount: featured.length,
-                      onPageChanged: (i) => setState(() => _page = i),
-                      itemBuilder: (context, i) => _FeaturedCard(featured[i]),
+                FadeSlideIn(
+                  index: 0,
+                  child: Row(children: [
+                    const GlacierLogo(size: 46),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(appName,
+                                style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w800,
+                                    height: 1.1)),
+                            SizedBox(height: 2),
+                            Text(appTagline,
+                                style:
+                                    TextStyle(fontSize: 12, color: G.muted)),
+                          ]),
                     ),
-                  ),
-                  if (dots > 1) ...[
-                    const SizedBox(height: 12),
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      for (var i = 0; i < dots; i++)
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          margin: const EdgeInsets.symmetric(horizontal: 3),
-                          width: i == _page ? 18 : 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: i == _page ? G.accent : G.line,
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                        ),
-                    ]),
-                  ],
-                ],
-                const SizedBox(height: 22),
-                Row(children: [
-                  const Text('ماشین‌های من',
-                      style:
-                          TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
-                  const Spacer(),
-                  Text('${ms.length}',
-                      style: const TextStyle(color: G.muted, fontSize: 15)),
-                ]),
-                const SizedBox(height: 12),
-                for (final m in ms) _MachineRow(m),
-                const SizedBox(height: 10),
-                GCard(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(children: [
-                    Row(children: [
-                      const Icon(Icons.storage_rounded, color: G.muted, size: 21),
-                      const SizedBox(width: 10),
-                      const Text('فضای ذخیره‌سازی',
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w600)),
-                      const Spacer(),
-                      Text(
-                        '${appState.usedGb.toStringAsFixed(1)} GB / ${AppState.storageLimitGb.toInt()} GB',
-                        style: const TextStyle(color: G.muted, fontSize: 13),
-                      ),
-                    ]),
-                    const SizedBox(height: 14),
-                    GBar(value: appState.usedGb / AppState.storageLimitGb),
+                    RoundIconButton(
+                      icon: Icons.settings_outlined,
+                      color: G.accent,
+                      onTap: () => widget.onNav(3),
+                    ),
                   ]),
+                ),
+                const SizedBox(height: 18),
+                FadeSlideIn(
+                  index: 1,
+                  child: featured.isEmpty
+                      ? _EmptyCard(
+                          onCreate: () => Navigator.of(context)
+                              .push(fadeRoute<void>(const CreatePage())),
+                        )
+                      : Column(children: [
+                          SizedBox(
+                            height: 250,
+                            child: PageView.builder(
+                              controller: _pc,
+                              itemCount: featured.length,
+                              onPageChanged: (i) => setState(() => _page = i),
+                              itemBuilder: (context, i) =>
+                                  _FeaturedCard(featured[i]),
+                            ),
+                          ),
+                          if (dots > 1) ...[
+                            const SizedBox(height: 12),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  for (var i = 0; i < dots; i++)
+                                    AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 250),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 3),
+                                      width: i == _page ? 18 : 6,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                        color: i == _page ? G.accent : G.line,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
+                                ]),
+                          ],
+                        ]),
+                ),
+                const SizedBox(height: 22),
+                FadeSlideIn(
+                  index: 2,
+                  child: Row(children: [
+                    const Text('ماشین‌های من',
+                        style: TextStyle(
+                            fontSize: 19, fontWeight: FontWeight.w700)),
+                    const Spacer(),
+                    Text('${ms.length}',
+                        style: const TextStyle(color: G.muted, fontSize: 15)),
+                  ]),
+                ),
+                const SizedBox(height: 12),
+                for (var i = 0; i < ms.length; i++)
+                  FadeSlideIn(index: i + 3, child: _MachineRow(ms[i])),
+                const SizedBox(height: 10),
+                FadeSlideIn(
+                  index: ms.length + 3,
+                  child: GCard(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(children: [
+                      Row(children: [
+                        const Icon(Icons.storage_rounded,
+                            color: G.muted, size: 21),
+                        const SizedBox(width: 10),
+                        const Text('فضای ذخیره‌سازی',
+                            style: TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w600)),
+                        const Spacer(),
+                        Text(
+                          '${appState.usedGb.toStringAsFixed(1)} GB / ${AppState.storageLimitGb.toInt()} GB',
+                          style: const TextStyle(color: G.muted, fontSize: 13),
+                        ),
+                      ]),
+                      const SizedBox(height: 14),
+                      GBar(value: appState.usedGb / AppState.storageLimitGb),
+                    ]),
+                  ),
                 ),
               ],
             );
