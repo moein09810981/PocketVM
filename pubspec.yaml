@@ -19,11 +19,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - app/src/main/assets/verchino_original_icon.png
+    - app/src/main/assets/verchino_original_icon-1.png
 
 
 flutter_launcher_icons:
   android: true
-  image_path: app/src/main/assets/verchino_original_icon.png
+  image_path: app/src/main/assets/verchino_original_icon-1.png
   adaptive_icon_background: "#080B18"
-  adaptive_icon_foreground: app/src/main/assets/verchino_original_icon.png
+  adaptive_icon_foreground: app/src/main/assets/verchino_original_icon-1.png
